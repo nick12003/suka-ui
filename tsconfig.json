@@ -21,7 +21,7 @@
     },
     "types": ["vite-plugin-svgr/client"]
   },
-  "include": ["./src/**/*.tsx", "./src/**/declarations.d.ts"],
+  "include": ["./src/**/*.tsx", "./src/**/*.d.ts"],
   "exclude": ["node_modules"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
