@@ -1,9 +1,29 @@
+import React from 'react';
 import styled, { css } from 'styled-components';
 
-type IVariant = 'vertical' | 'horizontal' | 'horizontal-reverse';
+type TVariant = 'vertical' | 'horizontal' | 'horizontal-reverse';
 
-interface ICustomer {
-  $variant: IVariant;
+interface IStyledCardProps {
+  $variant: TVariant;
+}
+
+export interface ICardProps extends React.ComponentPropsWithoutRef<'div'> {
+  /**
+   * 卡片封面媒體
+   */
+  cover?: React.ReactNode;
+  /**
+   * 變化模式
+   */
+  variant?: TVariant;
+  /**
+   * 內容
+   */
+  children: React.ReactNode;
+  /**
+   * 卡片置底頁尾
+   */
+  footer?: React.ReactNode;
 }
 
 const verticalStyle = css`
@@ -26,7 +46,7 @@ const variantMap = {
   'horizontal-reverse': horizontalReverseStyle,
 };
 
-const StyledCard = styled.div<ICustomer>`
+const StyledCard = styled.div<IStyledCardProps>`
   border: 1px solid #ddd;
   border-radius: 4px;
   overflow: hidden;
@@ -49,41 +69,17 @@ const SpaceBetween = styled.div`
   justify-content: space-between;
 `;
 
-export type ICardProps = React.ComponentPropsWithoutRef<'div'> & {
-  /**
-   * 客製化樣式
-   */
-  className?: string;
-  /**
-   * 卡片封面媒體
-   */
-  cover?: React.ReactNode;
-  /**
-   * 變化模式
-   */
-  variant?: IVariant;
-  /**
-   * 內容
-   */
-  children: React.ReactNode;
-  /**
-   * 卡片置底頁尾
-   */
-  footer?: React.ReactNode;
-};
-
 /**
  * `Card` 是一個可以顯示單個主題內容及操作的元件，通常這個主題內容包含圖片、標題、描述或是一些操作。
  */
-const Card = ({
-  className,
+const InternalCard: React.ForwardRefRenderFunction<HTMLDivElement, ICardProps> = ({
   cover,
   variant = 'vertical',
   children,
   footer,
   ...props
-}: ICardProps) => (
-  <StyledCard className={className} $variant={variant} {...props}>
+}) => (
+  <StyledCard $variant={variant} {...props}>
     <Cover>{cover}</Cover>
     <SpaceBetween>
       {children}
@@ -91,5 +87,7 @@ const Card = ({
     </SpaceBetween>
   </StyledCard>
 );
+
+const Card = React.forwardRef(InternalCard);
 
 export default Card;

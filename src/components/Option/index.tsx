@@ -8,41 +8,16 @@ import { useColor } from '@/theme/useColor';
 
 const DISABLED_COLOR = '#dadada';
 
-interface IStyledOption {
+interface IStyledOptionProps {
   $btnColor: string;
   $isDisabled: boolean;
 }
-
-const StyledOption = styled.div<IStyledOption>`
-  display: inline-flex;
-  align-items: center;
-  cursor: ${(props) => (props.$isDisabled ? 'not-allowed' : 'pointer')};
-  color: ${(props) => (props.$isDisabled ? DISABLED_COLOR : '#222222')};
-
-  & > *:not(:first-child) {
-    margin-left: 8px;
-  }
-
-  .option__checked-icon {
-    color: ${(props) => props.$btnColor};
-  }
-
-  .option__unchecked-icon {
-    color: ${(props) => (props.$isDisabled ? DISABLED_COLOR : '#808080')};
-  }
-
-  &:hover {
-    .option__unchecked-icon {
-      color: ${(props) => (props.$isDisabled ? DISABLED_COLOR : props.$btnColor)};
-    }
-  }
-`;
 
 export interface IOptionProps {
   /**
    * 開啟或關閉
    */
-  isChecked: boolean;
+  isChecked?: boolean;
   /**
    * 是否禁用
    */
@@ -69,16 +44,44 @@ export interface IOptionProps {
   children?: React.ReactNode;
 }
 
-const Option = ({
-  isChecked,
-  isDisabled = false,
-  themeColor = 'primary',
-  onClick,
-  checkedIcon = <CheckBoxIcon />,
-  unCheckedIcon = <CheckBoxOutlineBlankIcon />,
-  children = '',
-  ...props
-}: IOptionProps) => {
+const StyledOption = styled.div<IStyledOptionProps>`
+  display: inline-flex;
+  align-items: center;
+  cursor: ${(props) => (props.$isDisabled ? 'not-allowed' : 'pointer')};
+  color: ${(props) => (props.$isDisabled ? DISABLED_COLOR : '#222222')};
+
+  & > *:not(:first-child) {
+    margin-left: 8px;
+  }
+
+  .option__checked-icon {
+    color: ${(props) => props.$btnColor};
+  }
+
+  .option__unchecked-icon {
+    color: ${(props) => (props.$isDisabled ? DISABLED_COLOR : '#808080')};
+  }
+
+  &:hover {
+    .option__unchecked-icon {
+      color: ${(props) => (props.$isDisabled ? DISABLED_COLOR : props.$btnColor)};
+    }
+  }
+`;
+
+const InternalOption: React.ForwardRefRenderFunction<HTMLDivElement, IOptionProps> = (
+  {
+    isChecked,
+    isDisabled = false,
+    themeColor = 'primary',
+    onClick,
+    checkedIcon = <CheckBoxIcon />,
+    unCheckedIcon = <CheckBoxOutlineBlankIcon />,
+    children = '',
+    ...props
+  },
+  ref
+) => {
   const { makeColor } = useColor();
   const btnColor = makeColor({ themeColor, isDisabled });
 
@@ -87,6 +90,7 @@ const Option = ({
       onClick={isDisabled ? undefined : onClick}
       $isDisabled={isDisabled}
       $btnColor={btnColor}
+      ref={ref}
       {...props}
     >
       {isChecked
@@ -100,5 +104,7 @@ const Option = ({
     </StyledOption>
   );
 };
+
+const Option = React.forwardRef(InternalOption);
 
 export default Option;

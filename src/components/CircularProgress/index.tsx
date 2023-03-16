@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 
 const StyledCircularProgress = styled.progress`
@@ -118,8 +119,11 @@ const StyledCircularProgress = styled.progress`
   }
 `;
 
-const CircularProgress = (props: React.ComponentPropsWithoutRef<'progress'>) => {
-  return <StyledCircularProgress {...props} />;
-};
+const InternalCircularProgress: React.ForwardRefRenderFunction<
+  HTMLProgressElement,
+  React.ComponentPropsWithoutRef<'progress'>
+> = (props, ref) => <StyledCircularProgress ref={ref} {...props} />;
+
+const CircularProgress = React.forwardRef(InternalCircularProgress);
 
 export default CircularProgress;

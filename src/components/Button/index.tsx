@@ -1,18 +1,51 @@
+import React from 'react';
 import styled, { css } from 'styled-components';
 import CircularProgress from '../CircularProgress';
 import { useColor } from '@/theme/useColor';
 
-interface ICustomer {
+const Variants = ['contained', 'outlined', 'text'] as const;
+
+export type TVariant = typeof Variants[number];
+
+interface IVariantProps {
   $btnColor: string;
-  $variant: IVariant;
+}
+interface IStyledButtonProps extends IVariantProps {
+  $variant: TVariant;
 }
 
-const containedStyle = css<ICustomer>`
+export interface IButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+  /**
+   * 內容
+   */
+  children?: React.ReactNode;
+  /**
+   * 主題配色，primary、secondary 或是自己傳入色票
+   */
+  themeColor?: string;
+  /**
+   * 設置按鈕類型
+   */
+  variant?: TVariant;
+  /**
+   * 載入中狀態
+   */
+  isLoading?: boolean;
+  /**
+   * 禁用狀態
+   */
+  isDisabled?: boolean;
+  /**
+   * 點擊事件
+   */
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+}
+
+const containedStyle = css<IVariantProps>`
   background: ${(props) => props.$btnColor};
   color: #fff;
 `;
-
-const outlinedStyle = css<ICustomer>`
+const outlinedStyle = css<IVariantProps>`
   background: #fff;
   color: ${(props) => props.$btnColor};
   border: 1px solid ${(props) => props.$btnColor};
@@ -20,15 +53,13 @@ const outlinedStyle = css<ICustomer>`
     background: ${(props) => `${props.$btnColor}10`};
   }
 `;
-
-const textStyle = css<ICustomer>`
+const textStyle = css<IVariantProps>`
   background: #fff;
   color: ${(props) => props.$btnColor};
   &:hover {
     background: ${(props) => `${props.$btnColor}10`};
   }
 `;
-
 const disabledStyle = css`
   cursor: not-allowed;
   &:hover,
@@ -36,16 +67,12 @@ const disabledStyle = css`
     opacity: 1;
   }
 `;
-
-type IVariant = 'contained' | 'outlined' | 'text';
-
 const variantMap = {
   contained: containedStyle,
   outlined: outlinedStyle,
   text: textStyle,
 };
-
-const StyledButton = styled.button<ICustomer>`
+const StyledButton = styled.button<IStyledButtonProps>`
   border: none;
   outline: none;
   min-width: 100px;
@@ -70,57 +97,25 @@ const StyledButton = styled.button<ICustomer>`
   }
 `;
 
-export interface IButtonProps {
-  /**
-   * 客製化樣式
-   */
-  className?: string;
-  /**
-   * 內容
-   */
-  children: React.ReactNode;
-  /**
-   * 主題配色，primary、secondary 或是自己傳入色票
-   */
-  themeColor?: string;
-  /**
-   * 設置按鈕類型
-   */
-  variant?: IVariant;
-  /**
-   * 載入中狀態
-   */
-  isLoading?: boolean;
-  /**
-   * 禁用狀態
-   */
-  isDisabled?: boolean;
-  /**
-   * 點擊事件
-   */
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-}
-
-/**
- * `Button` 元件代表一個可點擊的按鈕，在使用者點擊之後會觸發相對應的業務邏輯。
- */
-const Button = ({
-  className,
-  children,
-  themeColor = 'primary',
-  variant = 'contained',
-  isLoading,
-  isDisabled = false,
-  onClick,
-  ...props
-}: IButtonProps) => {
+const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, IButtonProps> = (
+  {
+    children,
+    themeColor = 'primary',
+    variant = 'contained',
+    isLoading,
+    isDisabled = false,
+    onClick,
+    ...props
+  },
+  ref
+) => {
   const { makeColor } = useColor();
   const btnColor = makeColor({ themeColor, isDisabled });
 
   return (
     <StyledButton
       type="button"
-      className={className}
+      ref={ref}
       $btnColor={btnColor}
       $variant={variant}
       disabled={isDisabled}
@@ -132,5 +127,10 @@ const Button = ({
     </StyledButton>
   );
 };
+
+/**
+ * `Button` 元件代表一個可點擊的按鈕，在使用者點擊之後會觸發相對應的業務邏輯。
+ */
+const Button = React.forwardRef(InternalButton);
 
 export default Button;

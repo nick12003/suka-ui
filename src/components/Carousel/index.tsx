@@ -1,89 +1,20 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 
 import Arrow from '../Arrow';
 
-interface ICarouselWrapper {
+interface ICarouselWrapperProps {
   $width: number;
 }
-
-const CarouselWrapper = styled.div<ICarouselWrapper>`
-  position: relative;
-  width: ${(props) => props.$width}px;
-  height: 400px;
-`;
-
-const ImageWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  background: black;
-`;
-
-interface IImage {
+interface IImageProps {
   $left: number;
 }
 
-const Image = styled.img<IImage>`
-  width: 100%;
-  position: absolute;
-  left: ${(props) => props.$left}px;
-  transition: all 0.4s ease;
-  object-fit: cover;
-`;
-
-const ControlButtons = styled.div`
-  color: white;
-  position: absolute;
-  z-index: 10;
-  left: 0px;
-  top: 0px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  & > svg {
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-  }
-`;
-
-const Dots = styled.div`
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  left: 50%;
-  bottom: 8px;
-  transform: translateX(-50%);
-  & > *:not(:first-child) {
-    margin-left: 6px;
-  }
-`;
-
-interface IDot {
+interface IDotProps {
   $isCurrent: boolean;
 }
 
-const Dot = styled.div<IDot>`
-  border-radius: 100%;
-  width: ${(props) => (props.$isCurrent ? 10 : 8)}px;
-  height: ${(props) => (props.$isCurrent ? 10 : 8)}px;
-  border: 1px solid #fff;
-  background: ${(props) => (props.$isCurrent ? '#FFF' : 'none')};
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-`;
-
-export interface ICarouselProps {
-  /**
-   * 客製化樣式
-   */
-  className: string;
+export interface ICarouselProps extends React.ComponentPropsWithoutRef<'div'> {
   /**
    * 輪播資料
    */
@@ -102,17 +33,81 @@ export interface ICarouselProps {
   autoplay: boolean;
 }
 
+const CarouselWrapper = styled.div<ICarouselWrapperProps>`
+  position: relative;
+  width: ${(props) => props.$width}px;
+  height: 400px;
+`;
+
+const ImageWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  background: black;
+`;
+
+const Image = styled.img<IImageProps>`
+  width: 100%;
+  position: absolute;
+  left: ${(props) => props.$left}px;
+  transition: all 0.4s ease;
+  object-fit: cover;
+`;
+
+const ControlButtons = styled.div`
+  position: absolute;
+  z-index: 10;
+  left: 0px;
+  top: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  & > span {
+    cursor: pointer;
+    border-color: white;
+    width: 1rem;
+    height: 1rem;
+  }
+`;
+
+const Dots = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  & > *:not(:first-child) {
+    margin-left: 6px;
+  }
+`;
+
+const Dot = styled.div<IDotProps>`
+  border-radius: 100%;
+  width: ${(props) => (props.$isCurrent ? 10 : 8)}px;
+  height: ${(props) => (props.$isCurrent ? 10 : 8)}px;
+  border: 1px solid #fff;
+  background: ${(props) => (props.$isCurrent ? '#FFF' : 'none')};
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+`;
+
 /**
  * `Carousel` 是一個像旋轉木馬一樣會輪流轉的輪播元件。
  * 在一個內容空間有限的可視範圍中進行內容的輪播展示。通常適用於一組圖片或是卡片的輪播。
  */
-const Carousel = ({
-  className,
+const InternalCarousel: React.ForwardRefRenderFunction<HTMLDivElement, ICarouselProps> = ({
   dataSource,
   hasDots = true,
   hasControlArrow = true,
   autoplay = false,
-}: ICarouselProps) => {
+  ...props
+}) => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageWidth, setImageWidth] = useState(600);
@@ -166,7 +161,7 @@ const Carousel = ({
   }, [autoplay, handleClickNext]);
 
   return (
-    <CarouselWrapper ref={carouselRef} className={className} $width={imageWidth}>
+    <CarouselWrapper ref={carouselRef} $width={imageWidth} {...props}>
       <ImageWrapper>
         {dataSource.map((imageUrl, index) => (
           <Image key={imageUrl} src={imageUrl} alt="" $left={makePosition({ itemIndex: index })} />
@@ -192,5 +187,7 @@ const Carousel = ({
     </CarouselWrapper>
   );
 };
+
+const Carousel = React.forwardRef(InternalCarousel);
 
 export default Carousel;

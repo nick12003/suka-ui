@@ -1,22 +1,63 @@
-import { useState, useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useColor } from '@/theme/useColor';
 
-type ISize = 'default' | 'small';
-
-const transitionStyle = css`
-  transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    right 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-`;
-
-interface ISwitchButton {
+interface ISwitchButtonProps {
   $thumbSize: number;
   $switchWidth: number;
   $switchColor: string;
   $isDisabled: boolean;
 }
 
-const SwitchButton = styled.div<ISwitchButton>`
+interface IThumbProps {
+  $thumbSize: number;
+  $switchWidth: number;
+  $isChecked: boolean;
+}
+
+interface ILabelProps {
+  $padding: number;
+  $switchWidth: number;
+  $labelWidth: number;
+  $isChecked: boolean;
+}
+export interface ISwitchProps extends React.ComponentPropsWithoutRef<'div'> {
+  /**
+   * 開啟狀態的內容。若設置，則由外部參數控制；若不設置，則由內部 state 控制
+   */
+  isChecked: boolean;
+  /**
+   * 禁用狀態
+   */
+  isDisabled?: boolean;
+  /**
+   * 主題配色，primary、secondary 或是自己傳入色票
+   */
+  themeColor?: string;
+  /**
+   * 狀態改變的 callback function
+   */
+  onChange?: React.MouseEventHandler<HTMLDivElement>;
+  /**
+   * 開關大小
+   */
+  size?: 'default' | 'small';
+  /**
+   * 開啟狀態的內容
+   */
+  checkedChildren?: string;
+  /**
+   * 關閉狀態的內容
+   */
+  unCheckedChildren?: string;
+}
+
+const transitionStyle = css`
+  transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    right 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+`;
+
+const SwitchButton = styled.div<ISwitchButtonProps>`
   height: ${(props) => props.$thumbSize}px;
   width: ${(props) => props.$switchWidth}px;
   background: ${(props) => props.$switchColor};
@@ -29,13 +70,7 @@ const SwitchButton = styled.div<ISwitchButton>`
   box-sizing: content-box;
 `;
 
-interface IThumb {
-  $thumbSize: number;
-  $switchWidth: number;
-  $isChecked: boolean;
-}
-
-const Thumb = styled.div<IThumb>`
+const Thumb = styled.div<IThumbProps>`
   width: ${(props) => props.$thumbSize}px;
   height: ${(props) => props.$thumbSize}px;
   border-radius: 50px;
@@ -50,14 +85,7 @@ const Thumb = styled.div<IThumb>`
   ${transitionStyle}
 `;
 
-interface ILabel {
-  $padding: number;
-  $switchWidth: number;
-  $labelWidth: number;
-  $isChecked: boolean;
-}
-
-const Label = styled.div<ILabel>`
+const Label = styled.div<ILabelProps>`
   position: absolute;
   font-size: 14px;
   white-space: nowrap;
@@ -75,52 +103,24 @@ const Label = styled.div<ILabel>`
   ${transitionStyle}
 `;
 
-export type ISwitchProps = React.ComponentPropsWithoutRef<'div'> & {
-  /**
-   * 開啟狀態的內容。若設置，則由外部參數控制；若不設置，則由內部 state 控制
-   */
-  isChecked: boolean;
-  /**
-   * 禁用狀態
-   */
-  isDisabled?: boolean;
-  /**
-   * 主題配色，primary、secondary 或是自己傳入色票
-   */
-  themeColor?: string;
-  /**
-   * 狀態改變的 callback function
-   */
-  onChange: React.MouseEventHandler<HTMLDivElement>;
-  /**
-   * 開關大小
-   */
-  size?: ISize;
-  /**
-   * 開啟狀態的內容
-   */
-  checkedChildren?: string;
-  /**
-   * 關閉狀態的內容
-   */
-  unCheckedChildren?: string;
-};
-
 /**
  * `Switch` 元件是一個開關的選擇器。
  * 在我們表示開關狀態，或兩種狀態之間的切換時，很適合使用。和 Checkbox 的區別是， Checkbox 一般只用來標記狀態是否被選取，
  * 需要提交之後才會生效，而 Switch 則會在觸發的當下直接觸發狀態的改變。
  */
-const Switch = ({
-  isChecked,
-  isDisabled = false,
-  size = 'default',
-  themeColor = 'primary',
-  onChange,
-  checkedChildren = '',
-  unCheckedChildren = '',
-  ...props
-}: ISwitchProps) => {
+const InternalSwitch: React.ForwardRefRenderFunction<HTMLDivElement, ISwitchProps> = (
+  {
+    isChecked,
+    isDisabled = false,
+    size = 'default',
+    themeColor = 'primary',
+    onChange,
+    checkedChildren = '',
+    unCheckedChildren = '',
+    ...props
+  },
+  ref
+) => {
   const labelRef = useRef<HTMLDivElement>(null);
   const { makeColor } = useColor();
   const [labelWidth, setLabelWidth] = useState(0);
@@ -138,6 +138,7 @@ const Switch = ({
 
   return (
     <SwitchButton
+      ref={ref}
       $switchWidth={switchWidth}
       $thumbSize={thumbSize}
       $switchColor={switchColor}
@@ -158,5 +159,7 @@ const Switch = ({
     </SwitchButton>
   );
 };
+
+const Switch = React.forwardRef(InternalSwitch);
 
 export default Switch;

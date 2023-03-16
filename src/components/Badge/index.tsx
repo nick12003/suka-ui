@@ -1,5 +1,47 @@
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { useColor } from '@/theme/useColor';
+
+type TPlacement = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+interface IStandardBadgeProps {
+  $color: string;
+  $placement: TPlacement;
+}
+interface IDotBadgeProps {
+  $color: string;
+  $placement: TPlacement;
+}
+
+export interface IBadgeProps extends React.ComponentPropsWithoutRef<'div'> {
+  /**
+   * 內容
+   */
+  children: React.ReactNode;
+  /**
+   * 展示內容
+   */
+  value: number;
+  /**
+   * 最大顯示值
+   */
+  max?: number;
+  /**
+   * 主題配色，primary、secondary 或是自己傳入色票
+   */
+  themeColor?: string;
+  /**
+   * 徽章位置
+   */
+  placement?: TPlacement;
+  /**
+   * 變化模式
+   */
+  variant?: 'standard' | 'dot';
+  /**
+   * 是否呈現 0
+   */
+  showZero?: boolean;
+}
 
 const makeBadgeValue = ({
   showZero,
@@ -43,8 +85,6 @@ const bottomRightStyle = css`
   transform: translate(50%, 50%);
 `;
 
-type IPlacement = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-
 const placementStyleMap = {
   'top-left': topLeftStyle,
   'top-right': topRightStyle,
@@ -57,12 +97,7 @@ const BadgeWrapper = styled.div`
   position: relative;
 `;
 
-interface ICustomer {
-  $color: string;
-  $placement: IPlacement;
-}
-
-const StandardBadge = styled.div<ICustomer>`
+const StandardBadge = styled.div<IStandardBadgeProps>`
   display: flex;
   flex-flow: row wrap;
   place-content: center;
@@ -83,7 +118,7 @@ const StandardBadge = styled.div<ICustomer>`
   ${(props) => placementStyleMap[props.$placement] || topRightStyle}
 `;
 
-const DotBadge = styled.div<ICustomer>`
+const DotBadge = styled.div<IDotBadgeProps>`
   position: absolute;
   width: 6px;
   height: 6px;
@@ -92,55 +127,23 @@ const DotBadge = styled.div<ICustomer>`
   ${(props) => placementStyleMap[props.$placement] || topRightStyle}
 `;
 
-export interface IBadgeProps {
-  /**
-   * 內容
-   */
-  children: React.ReactNode;
-  /**
-   * 客製化樣式
-   */
-  className?: string;
-  /**
-   * 展示內容
-   */
-  value: number;
-  /**
-   * 最大顯示值
-   */
-  max?: number;
-  /**
-   * 主題配色，primary、secondary 或是自己傳入色票
-   */
-  themeColor?: string;
-  /**
-   * 徽章位置
-   */
-  placement?: IPlacement;
-  /**
-   * 變化模式
-   */
-  variant?: 'standard' | 'dot';
-  /**
-   * 是否呈現 0
-   */
-  showZero?: boolean;
-}
-
 /**
  * `Badge` 可以讓我們在其 children element 的右上角(預設位置)顯示一個小徽章，
  * 通常用來表示需要處理的訊息數量，透過醒目的視覺形式來吸引用戶處理。
  */
-const Badge = ({
-  children,
-  themeColor = '#F85149',
-  value,
-  placement = 'top-right',
-  max = 99,
-  variant = 'standard',
-  className,
-  showZero = false,
-}: IBadgeProps) => {
+const InternalBadge: React.ForwardRefRenderFunction<HTMLDivElement, IBadgeProps> = (
+  {
+    children,
+    themeColor = '#F85149',
+    value,
+    placement = 'top-right',
+    max = 99,
+    variant = 'standard',
+    showZero = false,
+    ...props
+  },
+  ref
+) => {
   const { makeColor } = useColor();
   const color = makeColor({ themeColor });
   const content = makeBadgeValue({ showZero, max, value });
@@ -148,16 +151,16 @@ const Badge = ({
   return (
     <BadgeWrapper>
       {children}
-      {variant === 'dot' && (
-        <DotBadge className={className} $color={color} $placement={placement} />
-      )}
+      {variant === 'dot' && <DotBadge ref={ref} $color={color} $placement={placement} {...props} />}
       {variant === 'standard' && content && (
-        <StandardBadge className={className} $color={color} $placement={placement}>
+        <StandardBadge ref={ref} $color={color} $placement={placement} {...props}>
           {content}
         </StandardBadge>
       )}
     </BadgeWrapper>
   );
 };
+
+const Badge = React.forwardRef(InternalBadge);
 
 export default Badge;

@@ -1,54 +1,47 @@
+import React from 'react';
 import styled from 'styled-components';
 
-type IDirection = 'up' | 'down' | 'left' | 'right';
-type ISize = 'small' | 'medium' | 'large';
+type TDirection = 'up' | 'down' | 'left' | 'right';
+type TSize = 'small' | 'medium' | 'large';
 
-function getDeg(direction: IDirection) {
-  switch (direction) {
-    case 'up':
-      return '-135deg';
-    case 'down':
-      return '45deg';
-    case 'left':
-      return '135deg';
-    case 'right':
-      return '-45deg';
-  }
+const degreeMap = {
+  up: '-135deg',
+  down: '45deg',
+  left: '135deg',
+  right: '-45deg',
+};
+
+const sizeMap = {
+  small: 0.125,
+  medium: 0.25,
+  large: 0.5,
+};
+
+export interface IArrowProps extends React.ComponentPropsWithoutRef<'span'> {
+  direction?: TDirection;
+  size?: TSize;
 }
 
-function getSize(size: ISize) {
-  switch (size) {
-    case 'small':
-      return 0.125;
-    case 'medium':
-      return 0.25;
-    case 'large':
-      return 0.5;
-  }
+interface IStyledArrowProps {
+  $direction: TDirection;
+  $size: TSize;
 }
 
-interface ICustomer {
-  $direction: IDirection;
-  $size: ISize;
-}
-
-const StyledArrow = styled.span<ICustomer>`
+const StyledArrow = styled.span<IStyledArrowProps>`
   border: solid black;
   border-width: 0 3px 3px 0;
   display: inline-block;
-  padding: ${({ $size }) => `${getSize($size)}rem`};
+  padding: ${({ $size }) => `${sizeMap[$size]}rem`};
   margin: 0.5rem;
-  transform: ${({ $direction }) => `rotate(${getDeg($direction)})`};
-  -webkit-transform: ${({ $direction }) => `rotate(${getDeg($direction)})`};
+  transform: ${({ $direction }) => `rotate(${degreeMap[$direction]})`};
+  -webkit-transform: ${({ $direction }) => `rotate(${degreeMap[$direction]})`};
 `;
 
-export type IArrowProps = React.ComponentPropsWithoutRef<'span'> & {
-  direction?: IDirection;
-  size?: ISize;
-};
+const InternalArrow: React.ForwardRefRenderFunction<HTMLSpanElement, IArrowProps> = (
+  { direction = 'up', size = 'medium', ...props },
+  ref
+) => <StyledArrow ref={ref} $direction={direction} $size={size} {...props} />;
 
-const Arrow = ({ direction = 'up', size = 'medium', ...props }: IArrowProps) => {
-  return <StyledArrow $direction={direction} $size={size} {...props} />;
-};
+const Arrow = React.forwardRef(InternalArrow);
 
 export default Arrow;

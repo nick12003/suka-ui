@@ -1,4 +1,24 @@
+import React from 'react';
 import styled from 'styled-components';
+
+export interface IMetaProps extends React.ComponentPropsWithoutRef<'div'> {
+  /**
+   * 客製化樣式
+   */
+  className?: string;
+  /**
+   * 標題
+   */
+  title?: string;
+  /**
+   * 描述
+   */
+  description?: string;
+  /**
+   * 頭像圖片位置連結
+   */
+  avatarUrl?: string;
+}
 
 const StyledMeta = styled.div`
   padding: 12px 16px;
@@ -31,27 +51,13 @@ const Content = styled.div`
   }
 `;
 
-export interface IMetaProps {
-  /**
-   * 客製化樣式
-   */
-  className?: string;
-  /**
-   * 標題
-   */
-  title?: string;
-  /**
-   * 描述
-   */
-  description?: string;
-  /**
-   * 頭像圖片位置連結
-   */
-  avatarUrl?: string;
-}
-
-const Meta = ({ className, avatarUrl, title, description }: IMetaProps) => (
-  <StyledMeta className={className}>
+const InternalMeta: React.ForwardRefRenderFunction<HTMLDivElement, IMetaProps> = ({
+  avatarUrl,
+  title,
+  description,
+  ...props
+}: IMetaProps) => (
+  <StyledMeta {...props}>
     <Avatar>
       <img src={avatarUrl} alt="" style={{ objectFit: 'cover' }} />
     </Avatar>
@@ -61,5 +67,7 @@ const Meta = ({ className, avatarUrl, title, description }: IMetaProps) => (
     </Content>
   </StyledMeta>
 );
+
+const Meta = React.forwardRef(InternalMeta);
 
 export default Meta;
