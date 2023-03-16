@@ -23,7 +23,6 @@ const BreadcrumbItem = ({ label, icon, to = '' }: IBreadcrumbItemProps) => {
   /**
    * Note: 使用 react-router-dom 來轉換 route path，此 demo 僅以 console.log 展示代替
    */
-  // eslint-disable-next-line no-console
   const navigate = console.log;
 
   const handleClickPath = (path: string) => {

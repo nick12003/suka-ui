@@ -12,20 +12,20 @@ interface ISwitchButtonProps {
 interface IThumbProps {
   $thumbSize: number;
   $switchWidth: number;
-  $isChecked: boolean;
+  $isChecked?: boolean;
 }
 
 interface ILabelProps {
   $padding: number;
   $switchWidth: number;
   $labelWidth: number;
-  $isChecked: boolean;
+  $isChecked?: boolean;
 }
 export interface ISwitchProps extends React.ComponentPropsWithoutRef<'div'> {
   /**
    * 開啟狀態的內容。若設置，則由外部參數控制；若不設置，則由內部 state 控制
    */
-  isChecked: boolean;
+  isChecked?: boolean;
   /**
    * 禁用狀態
    */

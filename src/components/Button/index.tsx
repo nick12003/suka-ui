@@ -36,6 +36,14 @@ export interface IButtonProps extends React.ComponentPropsWithoutRef<'button'> {
    */
   isDisabled?: boolean;
   /**
+   * 設置按鈕左方圖示
+   */
+  startIcon?: React.ReactNode;
+  /**
+   * 設置按鈕右方圖示
+   */
+  endIcon?: React.ReactNode;
+  /**
    * 點擊事件
    */
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
@@ -72,6 +80,13 @@ const variantMap = {
   outlined: outlinedStyle,
   text: textStyle,
 };
+const StartIcon = styled.span`
+  margin-right: 8px;
+`;
+
+const EndIcon = styled.span`
+  margin-left: 8px;
+`;
 const StyledButton = styled.button<IStyledButtonProps>`
   border: none;
   outline: none;
@@ -104,6 +119,8 @@ const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, IButtonP
     variant = 'contained',
     isLoading,
     isDisabled = false,
+    startIcon,
+    endIcon,
     onClick,
     ...props
   },
@@ -123,7 +140,9 @@ const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, IButtonP
       {...props}
     >
       {isLoading && <CircularProgress />}
+      {startIcon && <StartIcon>{startIcon}</StartIcon>}
       <span>{children}</span>
+      {endIcon && <EndIcon>{endIcon}</EndIcon>}
     </StyledButton>
   );
 };

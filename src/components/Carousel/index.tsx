@@ -97,10 +97,6 @@ const Dot = styled.div<IDotProps>`
   transition: all 0.2s ease-in-out;
 `;
 
-/**
- * `Carousel` 是一個像旋轉木馬一樣會輪流轉的輪播元件。
- * 在一個內容空間有限的可視範圍中進行內容的輪播展示。通常適用於一組圖片或是卡片的輪播。
- */
 const InternalCarousel: React.ForwardRefRenderFunction<HTMLDivElement, ICarouselProps> = ({
   dataSource,
   hasDots = true,
@@ -132,7 +128,6 @@ const InternalCarousel: React.ForwardRefRenderFunction<HTMLDivElement, ICarousel
   const handleClickNext = useCallback(() => {
     const { nextIndex } = getIndexes();
     setCurrentIndex(nextIndex);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
   const handleUpdateCarouselWidth = () => {
@@ -188,6 +183,10 @@ const InternalCarousel: React.ForwardRefRenderFunction<HTMLDivElement, ICarousel
   );
 };
 
+/**
+ * `Carousel` 是一個像旋轉木馬一樣會輪流轉的輪播元件。
+ * 在一個內容空間有限的可視範圍中進行內容的輪播展示。通常適用於一組圖片或是卡片的輪播。
+ */
 const Carousel = React.forwardRef(InternalCarousel);
 
 export default Carousel;

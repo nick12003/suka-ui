@@ -86,9 +86,6 @@ const Label = styled.span`
   padding: 0px 12px;
 `;
 
-/**
- * `Chip` 元件用於標記事物的屬性、標籤或用於分類、篩選。
- */
 const InternalChip: React.ForwardRefRenderFunction<HTMLDivElement, IChipProps> = (
   { variant = 'contained', label, themeColor = 'primary', icon, deleteIcon, onDelete, ...props },
   ref
@@ -112,6 +109,9 @@ const InternalChip: React.ForwardRefRenderFunction<HTMLDivElement, IChipProps> =
   );
 };
 
+/**
+ * `Chip` 元件用於標記事物的屬性、標籤或用於分類、篩選。
+ */
 const Chip = React.forwardRef(InternalChip);
 
 export default Chip;

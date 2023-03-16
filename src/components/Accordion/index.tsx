@@ -59,10 +59,6 @@ const StyledPanel = styled.div<IStyledPanelProps>`
   transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
-/**
- * `Accordion` 是一個可折疊/展開內容區域的元件。
- * 主要是針對顯示內容複雜或很多的頁面進行分區塊的顯示及隱藏。
- */
 const InternalAccordion: React.ForwardRefRenderFunction<HTMLDivElement, IAccordionProps> = (
   { isExpand = false, onClick, header, children, headerRef, panelRef, ...props },
   ref
@@ -83,6 +79,10 @@ const InternalAccordion: React.ForwardRefRenderFunction<HTMLDivElement, IAccordi
   );
 };
 
+/**
+ * `Accordion` 是一個可折疊/展開內容區域的元件。
+ * 主要是針對顯示內容複雜或很多的頁面進行分區塊的顯示及隱藏。
+ */
 const Accordion = React.forwardRef(InternalAccordion);
 
 export default Accordion;

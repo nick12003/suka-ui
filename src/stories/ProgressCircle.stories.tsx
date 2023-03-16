@@ -1,5 +1,4 @@
-/* eslint-disable react/destructuring-assignment */
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 

@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 import { useState, useEffect } from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';

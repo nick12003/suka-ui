@@ -110,7 +110,7 @@ const StyledFormControl = styled.div<ICustom>`
   }}
 `;
 
-export interface IFormControlProps {
+export interface IFormControlProps extends React.ComponentPropsWithoutRef<'div'> {
   /**
    * 標示為必填
    */
@@ -145,12 +145,6 @@ export interface IFormControlProps {
   children: any;
 }
 
-/**
- * `FormControl` 讓我們可以將 form input 所需要的共同前後文特性獨立出來管理，
- * 使被 control 的子元件之間的樣式能夠保持一致性。
- * 例如在 form input 元件 `TextField`, `Switch`, `Checkbox` 當中，
- * 將 `label`, `required`, `error` ...等邏輯與樣式獨立出來藉由 FormControl 來管理。
- */
 const InternalFormControl: React.ForwardRefRenderFunction<HTMLDivElement, IFormControlProps> = (
   {
     label = '',
@@ -199,6 +193,12 @@ const InternalFormControl: React.ForwardRefRenderFunction<HTMLDivElement, IFormC
   );
 };
 
+/**
+ * `FormControl` 讓我們可以將 form input 所需要的共同前後文特性獨立出來管理，
+ * 使被 control 的子元件之間的樣式能夠保持一致性。
+ * 例如在 form input 元件 `TextField`, `Switch`, `Checkbox` 當中，
+ * 將 `label`, `required`, `error` ...等邏輯與樣式獨立出來藉由 FormControl 來管理。
+ */
 const FormControl = React.forwardRef(InternalFormControl);
 
 export default FormControl;

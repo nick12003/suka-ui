@@ -127,10 +127,6 @@ const DotBadge = styled.div<IDotBadgeProps>`
   ${(props) => placementStyleMap[props.$placement] || topRightStyle}
 `;
 
-/**
- * `Badge` 可以讓我們在其 children element 的右上角(預設位置)顯示一個小徽章，
- * 通常用來表示需要處理的訊息數量，透過醒目的視覺形式來吸引用戶處理。
- */
 const InternalBadge: React.ForwardRefRenderFunction<HTMLDivElement, IBadgeProps> = (
   {
     children,
@@ -161,6 +157,10 @@ const InternalBadge: React.ForwardRefRenderFunction<HTMLDivElement, IBadgeProps>
   );
 };
 
+/**
+ * `Badge` 可以讓我們在其 children element 的右上角(預設位置)顯示一個小徽章，
+ * 通常用來表示需要處理的訊息數量，透過醒目的視覺形式來吸引用戶處理。
+ */
 const Badge = React.forwardRef(InternalBadge);
 
 export default Badge;

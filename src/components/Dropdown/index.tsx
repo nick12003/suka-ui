@@ -195,11 +195,6 @@ const OverlayWrapper = styled.div<IOverlayWrapperProps>`
   ${(props) => placementStyleMap[props.$placement] || placementStyleMap.top}
 `;
 
-/**
- * `Dropdown` 是一個下拉選單元件，當頁面上的選項過多時，
- * 可以用這個元件來收納選項，透過滑鼠事件來觸發選單彈出，
- * 點擊選項會執行相對應的命令。
- */
 const InternalDropdown: React.ForwardRefRenderFunction<HTMLDivElement, IDropdownProps> = (
   { children, placement = 'bottom', overlay, isOpen = false, onClick, onClose },
   ref
@@ -272,6 +267,11 @@ const InternalDropdown: React.ForwardRefRenderFunction<HTMLDivElement, IDropdown
   );
 };
 
+/**
+ * `Dropdown` 是一個下拉選單元件，當頁面上的選項過多時，
+ * 可以用這個元件來收納選項，透過滑鼠事件來觸發選單彈出，
+ * 點擊選項會執行相對應的命令。
+ */
 const Dropdown = React.forwardRef(InternalDropdown);
 
 export default Dropdown;

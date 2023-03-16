@@ -190,10 +190,6 @@ export interface IDrawerProps {
   children: React.ReactNode;
 }
 
-/**
- * `Drawer` 抽屜元件，由螢幕邊緣滑出的浮動面版，
- * 常見的應用是作為導航用途，例如 Navigation drawers。
- */
 const InternalDrawer: React.ForwardRefRenderFunction<HTMLDivElement, IDrawerProps> = (
   { children, isOpen = false, placement = 'left', onClose, animationDuration = 200, ...props },
   ref
@@ -228,6 +224,10 @@ const InternalDrawer: React.ForwardRefRenderFunction<HTMLDivElement, IDrawerProp
   );
 };
 
+/**
+ * `Drawer` 抽屜元件，由螢幕邊緣滑出的浮動面版，
+ * 常見的應用是作為導航用途，例如 Navigation drawers。
+ */
 const Drawer = React.forwardRef(InternalDrawer);
 
 export default Drawer;
