@@ -2,6 +2,8 @@
 
 simple UI library
 
+[demo](https://main--6413cd1104225a474e7336ff.chromatic.com)
+
 ## desc
 
 使用 react-vite + storybook + typescript
