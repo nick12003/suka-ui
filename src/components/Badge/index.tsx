@@ -2,102 +2,57 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { useColor } from '@/theme/useColor';
 
-type TPlacement = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-interface IStandardBadgeProps {
-  $color: string;
-  $placement: TPlacement;
-}
-interface IDotBadgeProps {
-  $color: string;
-  $placement: TPlacement;
-}
-
-export interface IBadgeProps extends React.ComponentPropsWithoutRef<'div'> {
-  /**
-   * 內容
-   */
-  children: React.ReactNode;
-  /**
-   * 展示內容
-   */
-  value: number;
-  /**
-   * 最大顯示值
-   */
-  max?: number;
-  /**
-   * 主題配色，primary、secondary 或是自己傳入色票
-   */
-  themeColor?: string;
-  /**
-   * 徽章位置
-   */
-  placement?: TPlacement;
-  /**
-   * 變化模式
-   */
-  variant?: 'standard' | 'dot';
-  /**
-   * 是否呈現 0
-   */
-  showZero?: boolean;
-}
-
-const makeBadgeValue = ({
-  showZero,
-  max,
-  value,
-}: {
-  showZero: boolean;
-  max: number;
-  value: number;
-}) => {
+const makeBadgeValue: (arg: { showZero: boolean; max: number; value: number }) => {
+  show: boolean;
+  showValue?: string | number;
+} = ({ showZero, max, value }) => {
   if (showZero && value === 0) {
-    return '0';
+    return { show: true, showValue: 0 };
   }
   if (!showZero && value === 0) {
-    return null;
+    return { show: false };
   }
-  return value > max ? `${max}+` : value;
+  return { show: true, showValue: value > max ? `${max}+` : value };
 };
 
-const topLeftStyle = css`
-  top: 0px;
-  left: 0px;
-  transform: translate(-50%, -50%);
-`;
-
-const topRightStyle = css`
-  top: 0px;
-  right: 0px;
-  transform: translate(50%, -50%);
-`;
-
-const bottomLeftStyle = css`
-  bottom: 0px;
-  left: 0px;
-  transform: translate(-50%, 50%);
-`;
-
-const bottomRightStyle = css`
-  bottom: 0px;
-  right: 0px;
-  transform: translate(50%, 50%);
-`;
+type TPlacement = keyof typeof placementStyleMap;
 
 const placementStyleMap = {
-  'top-left': topLeftStyle,
-  'top-right': topRightStyle,
-  'bottom-left': bottomLeftStyle,
-  'bottom-right': bottomRightStyle,
+  'top-left': css`
+    top: 0px;
+    left: 0px;
+    transform: translate(-50%, -50%);
+  `,
+  'top-right': css`
+    top: 0px;
+    right: 0px;
+    transform: translate(50%, -50%);
+  `,
+  'bottom-left': css`
+    bottom: 0px;
+    left: 0px;
+    transform: translate(-50%, 50%);
+  `,
+  'bottom-right': css`
+    bottom: 0px;
+    right: 0px;
+    transform: translate(50%, 50%);
+  `,
 };
 
-const BadgeWrapper = styled.div`
+interface IMain extends extendElement<'div'> {}
+
+const StyledMain = styled.div<IMain>`
   display: inline-flex;
   position: relative;
 `;
 
-const StandardBadge = styled.div<IStandardBadgeProps>`
+interface IBadge extends extendElement<'div'> {
+  $color: string;
+  $placement: TPlacement;
+}
+
+const StandardBadge = styled.div<IBadge>`
   display: flex;
   flex-flow: row wrap;
   place-content: center;
@@ -110,50 +65,97 @@ const StandardBadge = styled.div<IStandardBadgeProps>`
   min-width: 20px;
   padding: 0px 6px;
   height: 20px;
-  border-radius: 10px;
+  border-radius: 50%;
   z-index: 1;
   transition: transform 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   background-color: ${(props) => props.$color};
   color: #fff;
-  ${(props) => placementStyleMap[props.$placement] || topRightStyle}
+  ${(props) => placementStyleMap[props.$placement]}
 `;
 
-const DotBadge = styled.div<IDotBadgeProps>`
+const DotBadge = styled.div<IBadge>`
   position: absolute;
   width: 6px;
   height: 6px;
   border-radius: 100%;
   background-color: ${(props) => props.$color};
-  ${(props) => placementStyleMap[props.$placement] || topRightStyle}
+  ${(props) => placementStyleMap[props.$placement]}
 `;
+
+export interface IBadgeProps {
+  /**
+   * 數值
+   */
+  value: number;
+  /**
+   * 最大值
+   */
+  max?: number;
+  /**
+   * 主題配色，primary、secondary 或是自己傳入色票
+   */
+  themeColor?: TThemeColor;
+  /**
+   * 徽章位置
+   */
+  placement?: TPlacement;
+  /**
+   * 樣式變化模式
+   */
+  variant?: 'standard' | 'dot';
+  /**
+   * 是否呈現 0
+   */
+  showZero?: boolean;
+  /**
+   * badge的ref
+   */
+  badgeRef?: React.ForwardedRef<HTMLDivElement>;
+  /**
+   * badge區塊的prop
+   */
+  badgeProps?: Omit<IBadge, '$color' | '$placement'>;
+  /**
+   * 內容，一般為Icon
+   */
+  children: React.ReactNode;
+}
 
 const InternalBadge: React.ForwardRefRenderFunction<HTMLDivElement, IBadgeProps> = (
   {
-    children,
-    themeColor = '#F85149',
     value,
-    placement = 'top-right',
     max = 99,
+    themeColor = '#F85149',
+    placement = 'top-right',
     variant = 'standard',
     showZero = false,
+    badgeRef,
+    badgeProps,
+    children,
     ...props
   },
   ref
 ) => {
   const { makeColor } = useColor();
   const color = makeColor({ themeColor });
-  const content = makeBadgeValue({ showZero, max, value });
+  const { show, showValue } = makeBadgeValue({ showZero, max, value });
 
   return (
-    <BadgeWrapper>
+    <StyledMain ref={ref} {...props}>
       {children}
-      {variant === 'dot' && <DotBadge ref={ref} $color={color} $placement={placement} {...props} />}
-      {variant === 'standard' && content && (
-        <StandardBadge ref={ref} $color={color} $placement={placement} {...props}>
-          {content}
-        </StandardBadge>
+      {show && (
+        <>
+          {variant === 'dot' && (
+            <DotBadge ref={badgeRef} $color={color} $placement={placement} {...badgeProps} />
+          )}
+          {variant === 'standard' && (
+            <StandardBadge ref={badgeRef} $color={color} $placement={placement} {...badgeProps}>
+              {showValue}
+            </StandardBadge>
+          )}
+        </>
       )}
-    </BadgeWrapper>
+    </StyledMain>
   );
 };
 

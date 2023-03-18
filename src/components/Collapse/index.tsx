@@ -3,16 +3,16 @@ import styled from 'styled-components';
 
 import Arrow from '../Arrow';
 
-interface TypeMain extends extendElement<'div'> {}
+interface IMain extends extendElement<'div'> {}
 
-const StyledMain = styled.div<TypeMain>`
+const StyledMain = styled.div<IMain>`
   display: inline-flex;
   flex-direction: column;
 `;
 
-interface TypeHeader extends extendElement<'div'> {}
+interface IHeader extends extendElement<'div'> {}
 
-const StyledHeader = styled.div<TypeHeader>`
+const StyledHeader = styled.div<IHeader>`
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -31,11 +31,11 @@ const StyledExpandIconWrapper = styled.div`
   padding-left: 0.5rem;
 `;
 
-interface TypePanel extends extendElement<'div'> {
+interface IPanel extends extendElement<'div'> {
   $maxHeight: number;
 }
 
-const StyledPanel = styled.div<TypePanel>`
+const StyledPanel = styled.div<IPanel>`
   max-height: ${(props) => props.$maxHeight}px;
   overflow: hidden;
   transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -70,7 +70,7 @@ export interface ICollapseProps {
   /**
    * header區塊的prop 不包含onClick
    */
-  headerProps?: Omit<TypeHeader, 'onClick'>;
+  headerProps?: Omit<IHeader, 'onClick'>;
   /**
    * 可被收合的 panel 內容
    */
@@ -82,7 +82,7 @@ export interface ICollapseProps {
   /**
    * panel的prop
    */
-  panelProps?: Omit<TypePanel, '$maxHeight'>;
+  panelProps?: Omit<IPanel, '$maxHeight'>;
 }
 
 const InternalCollapse: React.ForwardRefRenderFunction<HTMLDivElement, ICollapseProps> = (
