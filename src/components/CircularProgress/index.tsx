@@ -10,7 +10,9 @@ const StyledCircularProgress = styled.progress`
   border-radius: 50%;
   padding: 0.25em;
   width: 2em;
+  min-width: 2rem;
   height: 2em;
+  min-height: 2rem;
   background-color: transparent;
   font-size: 16px;
   overflow: hidden;

@@ -49,8 +49,6 @@ const Template: ComponentStory<typeof Collapse> = (args) => {
 export const Default = Template.bind({});
 
 const ControlWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
   border-top: 1px solid #587cb0;
   border-bottom: 1px solid #587cb0;
   & > *:not(:first-child) {
