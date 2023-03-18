@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-type TDirection = 'up' | 'down' | 'left' | 'right';
-type TSize = 'small' | 'medium' | 'large';
+type TDirection = keyof typeof degreeMap;
+type TSize = keyof typeof sizeMap;
 
 const degreeMap = {
   up: '-135deg',
@@ -17,17 +17,12 @@ const sizeMap = {
   large: 0.5,
 };
 
-export interface IArrowProps extends React.ComponentPropsWithoutRef<'span'> {
-  direction?: TDirection;
-  size?: TSize;
-}
-
-interface IStyledArrowProps {
+type TypeMain = {
   $direction: TDirection;
   $size: TSize;
-}
+};
 
-const StyledArrow = styled.span<IStyledArrowProps>`
+const StyledMain = styled.span<TypeMain>`
   border: solid black;
   border-width: 0 3px 3px 0;
   display: inline-block;
@@ -37,10 +32,15 @@ const StyledArrow = styled.span<IStyledArrowProps>`
   -webkit-transform: ${({ $direction }) => `rotate(${degreeMap[$direction]})`};
 `;
 
+export interface IArrowProps extends extendElement<'span'> {
+  direction?: TDirection;
+  size?: TSize;
+}
+
 const InternalArrow: React.ForwardRefRenderFunction<HTMLSpanElement, IArrowProps> = (
   { direction = 'up', size = 'medium', ...props },
   ref
-) => <StyledArrow ref={ref} $direction={direction} $size={size} {...props} />;
+) => <StyledMain ref={ref} $direction={direction} $size={size} {...props} />;
 
 const Arrow = React.forwardRef(InternalArrow);
 

@@ -3,9 +3,7 @@ import styled, { css } from 'styled-components';
 import CircularProgress from '../CircularProgress';
 import { useColor } from '@/theme/useColor';
 
-const Variants = ['contained', 'outlined', 'text'] as const;
-
-export type TVariant = typeof Variants[number];
+export type TVariant = keyof typeof variantMap;
 
 interface IVariantProps {
   $btnColor: string;
@@ -14,7 +12,7 @@ interface IStyledButtonProps extends IVariantProps {
   $variant: TVariant;
 }
 
-export interface IButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+export interface IButtonProps extends extendElement<'button'> {
   /**
    * 內容
    */
@@ -22,7 +20,7 @@ export interface IButtonProps extends React.ComponentPropsWithoutRef<'button'> {
   /**
    * 主題配色，primary、secondary 或是自己傳入色票
    */
-  themeColor?: string;
+  themeColor?: TThemeColor;
   /**
    * 設置按鈕類型
    */
@@ -49,25 +47,6 @@ export interface IButtonProps extends React.ComponentPropsWithoutRef<'button'> {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const containedStyle = css<IVariantProps>`
-  background: ${(props) => props.$btnColor};
-  color: #fff;
-`;
-const outlinedStyle = css<IVariantProps>`
-  background: #fff;
-  color: ${(props) => props.$btnColor};
-  border: 1px solid ${(props) => props.$btnColor};
-  &:hover {
-    background: ${(props) => `${props.$btnColor}10`};
-  }
-`;
-const textStyle = css<IVariantProps>`
-  background: #fff;
-  color: ${(props) => props.$btnColor};
-  &:hover {
-    background: ${(props) => `${props.$btnColor}10`};
-  }
-`;
 const disabledStyle = css`
   cursor: not-allowed;
   &:hover,
@@ -76,9 +55,25 @@ const disabledStyle = css`
   }
 `;
 const variantMap = {
-  contained: containedStyle,
-  outlined: outlinedStyle,
-  text: textStyle,
+  contained: css<IVariantProps>`
+    background: ${(props) => props.$btnColor};
+    color: #fff;
+  `,
+  outlined: css<IVariantProps>`
+    background: #fff;
+    color: ${(props) => props.$btnColor};
+    border: 1px solid ${(props) => props.$btnColor};
+    &:hover {
+      background: ${(props) => `${props.$btnColor}10`};
+    }
+  `,
+  text: css<IVariantProps>`
+    background: #fff;
+    color: ${(props) => props.$btnColor};
+    &:hover {
+      background: ${(props) => `${props.$btnColor}10`};
+    }
+  `,
 };
 const StartIcon = styled.span`
   margin-right: 8px;
