@@ -3,18 +3,83 @@ import styled from 'styled-components';
 
 import Arrow from '../Arrow';
 
-interface ICarouselWrapperProps {
+interface IMain {
   $width: number;
 }
-interface IImageProps {
+
+const StyledMain = styled.div<IMain>`
+  position: relative;
+  width: ${(props) => props.$width}px;
+  height: 400px;
+`;
+
+const StyledImageWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  background: black;
+`;
+
+interface IImage {
   $left: number;
 }
 
-interface IDotProps {
+const StyledImage = styled.img<IImage>`
+  width: 100%;
+  position: absolute;
+  left: ${(props) => props.$left}px;
+  transition: all 0.4s ease;
+  object-fit: cover;
+`;
+
+const StyledButtons = styled.div`
+  position: absolute;
+  z-index: 10;
+  left: 0px;
+  top: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  & > span {
+    cursor: pointer;
+    border-color: white;
+    width: 1rem;
+    height: 1rem;
+  }
+`;
+
+const StyledDots = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  & > *:not(:first-child) {
+    margin-left: 6px;
+  }
+`;
+
+interface IDot {
   $isCurrent: boolean;
 }
 
-export interface ICarouselProps extends React.ComponentPropsWithoutRef<'div'> {
+const StyledDot = styled.div<IDot>`
+  border-radius: 100%;
+  width: ${(props) => (props.$isCurrent ? 10 : 8)}px;
+  height: ${(props) => (props.$isCurrent ? 10 : 8)}px;
+  border: 1px solid #fff;
+  background: ${(props) => (props.$isCurrent ? '#FFF' : 'none')};
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+`;
+
+export interface ICarouselProps {
   /**
    * 輪播資料
    */
@@ -33,77 +98,10 @@ export interface ICarouselProps extends React.ComponentPropsWithoutRef<'div'> {
   autoplay: boolean;
 }
 
-const CarouselWrapper = styled.div<ICarouselWrapperProps>`
-  position: relative;
-  width: ${(props) => props.$width}px;
-  height: 400px;
-`;
-
-const ImageWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  background: black;
-`;
-
-const Image = styled.img<IImageProps>`
-  width: 100%;
-  position: absolute;
-  left: ${(props) => props.$left}px;
-  transition: all 0.4s ease;
-  object-fit: cover;
-`;
-
-const ControlButtons = styled.div`
-  position: absolute;
-  z-index: 10;
-  left: 0px;
-  top: 0px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  & > span {
-    cursor: pointer;
-    border-color: white;
-    width: 1rem;
-    height: 1rem;
-  }
-`;
-
-const Dots = styled.div`
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  left: 50%;
-  bottom: 8px;
-  transform: translateX(-50%);
-  & > *:not(:first-child) {
-    margin-left: 6px;
-  }
-`;
-
-const Dot = styled.div<IDotProps>`
-  border-radius: 100%;
-  width: ${(props) => (props.$isCurrent ? 10 : 8)}px;
-  height: ${(props) => (props.$isCurrent ? 10 : 8)}px;
-  border: 1px solid #fff;
-  background: ${(props) => (props.$isCurrent ? '#FFF' : 'none')};
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-`;
-
-const InternalCarousel: React.ForwardRefRenderFunction<HTMLDivElement, ICarouselProps> = ({
-  dataSource,
-  hasDots = true,
-  hasControlArrow = true,
-  autoplay = false,
-  ...props
-}) => {
+const InternalCarousel: React.ForwardRefRenderFunction<
+  HTMLDivElement,
+  ICarouselProps & extendElement<'div'>
+> = ({ dataSource, hasDots = true, hasControlArrow = true, autoplay = false, ...props }) => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageWidth, setImageWidth] = useState(600);
@@ -156,30 +154,35 @@ const InternalCarousel: React.ForwardRefRenderFunction<HTMLDivElement, ICarousel
   }, [autoplay, handleClickNext]);
 
   return (
-    <CarouselWrapper ref={carouselRef} $width={imageWidth} {...props}>
-      <ImageWrapper>
+    <StyledMain ref={carouselRef} $width={imageWidth} {...props}>
+      <StyledImageWrapper>
         {dataSource.map((imageUrl, index) => (
-          <Image key={imageUrl} src={imageUrl} alt="" $left={makePosition({ itemIndex: index })} />
+          <StyledImage
+            key={imageUrl}
+            src={imageUrl}
+            alt=""
+            $left={makePosition({ itemIndex: index })}
+          />
         ))}
-      </ImageWrapper>
+      </StyledImageWrapper>
       {hasControlArrow && (
-        <ControlButtons>
+        <StyledButtons>
           <Arrow direction="left" onClick={handleClickPrev} />
           <Arrow direction="right" onClick={handleClickNext} />
-        </ControlButtons>
+        </StyledButtons>
       )}
       {hasDots && (
-        <Dots>
+        <StyledDots>
           {[...Array(dataSource.length).keys()].map((key, index) => (
-            <Dot
+            <StyledDot
               key={key}
               $isCurrent={index === currentIndex}
               onClick={() => setCurrentIndex(key)}
             />
           ))}
-        </Dots>
+        </StyledDots>
       )}
-    </CarouselWrapper>
+    </StyledMain>
   );
 };
 

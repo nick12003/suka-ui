@@ -123,7 +123,7 @@ const StyledCircularProgress = styled.progress`
 
 const InternalCircularProgress: React.ForwardRefRenderFunction<
   HTMLProgressElement,
-  React.ComponentPropsWithoutRef<'progress'>
+  extendElement<'progress'>
 > = (props, ref) => <StyledCircularProgress ref={ref} {...props} />;
 
 const CircularProgress = React.forwardRef(InternalCircularProgress);

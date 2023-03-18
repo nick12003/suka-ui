@@ -41,14 +41,6 @@ const Actions = styled.div`
   }
 `;
 
-const VariantGroup = styled.div`
-  display: inline-flex;
-  flex-direction: column;
-  & > *:not(:first-child) {
-    margin-top: 20px;
-  }
-`;
-
 const Template: Story<ICardProps> = (args) => <Card {...args} />;
 
 const defaultArgs = {

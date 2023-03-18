@@ -17,7 +17,7 @@ const sizeMap = {
   large: 0.5,
 };
 
-interface IMain extends extendElement<'span'> {
+interface IMain {
   $direction: TDirection;
   $size: TSize;
 }
@@ -37,10 +37,12 @@ export interface IArrowProps {
   size?: TSize;
 }
 
-const InternalArrow: React.ForwardRefRenderFunction<HTMLSpanElement, IArrowProps> = (
-  { direction = 'up', size = 'medium', ...props },
-  ref
-) => <StyledMain ref={ref} $direction={direction} $size={size} {...props} />;
+const InternalArrow: React.ForwardRefRenderFunction<
+  HTMLSpanElement,
+  IArrowProps & extendElement<'span'>
+> = ({ direction = 'up', size = 'medium', ...props }, ref) => (
+  <StyledMain ref={ref} $direction={direction} $size={size} {...props} />
+);
 
 const Arrow = React.forwardRef(InternalArrow);
 
