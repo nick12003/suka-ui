@@ -5,7 +5,7 @@ import styled, { keyframes } from 'styled-components';
 import Spin, { ISpinProps } from '../components/Spin';
 import Switch from '../components/Switch';
 import FormControl from '../components/FormControl';
-import { ReactComponent as Spinner } from '@/assets/spinner.svg';
+import { ReactComponent as Spinner } from '@/assets/SVG/spinner.svg';
 
 export default {
   title: '反饋元件/Spin',

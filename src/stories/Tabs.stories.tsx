@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import { ReactComponent as PhoneIcon } from '@/assets/phone.svg';
-import { ReactComponent as FavoriteIcon } from '@/assets/favorite.svg';
-import { ReactComponent as PersonPinIcon } from '@/assets/personPin.svg';
+import { ReactComponent as PhoneIcon } from '@/assets/SVG/phone.svg';
+import { ReactComponent as FavoriteIcon } from '@/assets/SVG/favorite.svg';
+import { ReactComponent as PersonPinIcon } from '@/assets/SVG/personPin.svg';
 
 import Tabs, { ITabGroupProps } from '../components/Tabs';
 

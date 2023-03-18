@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import classNames from 'classnames';
 
-import CheckBoxIcon from '@/assets/CheckBox.svg';
-import CheckBoxOutlineBlankIcon from '@/assets/CheckBoxOutlineBlank.svg';
+import { ReactComponent as CheckBoxIcon } from '@/assets/SVG/checkBox.svg';
+import { ReactComponent as CheckBoxOutlineBlankIcon } from '@/assets/SVG/checkBoxOutlineBlank.svg';
 import { useColor } from '@/theme/useColor';
 
 const DISABLED_COLOR = '#dadada';

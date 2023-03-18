@@ -5,10 +5,10 @@ import styled from 'styled-components';
 import Carousel, { ICarouselProps } from '@/components/Carousel';
 import Switch from '@/components/Switch';
 
-import birdImg from '@/assets/bird.jpeg';
-import duckImg from '@/assets/duck.jpeg';
-import eagleImg from '@/assets/eagle.jpeg';
-import frogImg from '@/assets/frog.jpeg';
+import birdImg from './assets/bird.jpeg';
+import duckImg from './assets/duck.jpeg';
+import eagleImg from './assets/eagle.jpeg';
+import frogImg from './assets/frog.jpeg';
 
 export default {
   title: '數據展示元件/Carousel',

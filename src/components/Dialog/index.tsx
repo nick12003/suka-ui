@@ -5,7 +5,7 @@ import Modal, { IModalProps } from '../Modal';
 
 import Button from '../Button';
 
-import { ReactComponent as CloseIcon } from '@/assets/close.svg';
+import { ReactComponent as CloseIcon } from '@/assets/SVG/close.svg';
 
 const HeaderWrapper = styled.div`
   border-bottom: 1px solid #eeeeee;

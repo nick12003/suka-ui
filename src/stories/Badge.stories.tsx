@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import { ReactComponent as Line } from '@/assets/line.svg';
+import { ReactComponent as Line } from '@/assets/SVG/line.svg';
 import Badge, { IBadgeProps } from '@/components/Badge';
 import { disableArgs } from './utilityStory';
 

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import { ReactComponent as FavoriteBorderIcon } from '@/assets/favoriteBorder.svg';
-import { ReactComponent as SentimentVerySatisfiedOutlinedIcon } from '@/assets/sentimentVerySatisfied.svg';
+import { ReactComponent as FavoriteBorderIcon } from '@/assets/SVG/favoriteBorder.svg';
+import { ReactComponent as SentimentVerySatisfiedOutlinedIcon } from '@/assets/SVG/sentimentVerySatisfied.svg';
 
 import Rate, { IRateProps } from '../components/Rate';
 

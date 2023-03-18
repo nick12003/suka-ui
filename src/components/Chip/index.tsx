@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import classNames from 'classnames';
 
-import { ReactComponent as Cancel } from '@/assets/cancel.svg';
+import { ReactComponent as Cancel } from '@/assets/SVG/cancel.svg';
 import { useColor } from '@/theme/useColor';
 
 type TVariant = 'contained' | 'outlined';

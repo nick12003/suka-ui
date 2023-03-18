@@ -2,8 +2,8 @@ import { Story } from '@storybook/react';
 import { useState } from 'react';
 import styled from 'styled-components';
 
-import { ReactComponent as FaceIcon } from '@/assets/face.svg';
-import { ReactComponent as DoneIcon } from '@/assets/done.svg';
+import { ReactComponent as FaceIcon } from '@/assets/SVG/face.svg';
+import { ReactComponent as DoneIcon } from '@/assets/SVG/done.svg';
 
 import Chip, { IChipProps } from '@/components/Chip';
 

@@ -17,12 +17,12 @@ const sizeMap = {
   large: 0.5,
 };
 
-type TypeMain = {
+interface IMain extends extendElement<'span'> {
   $direction: TDirection;
   $size: TSize;
-};
+}
 
-const StyledMain = styled.span<TypeMain>`
+const StyledMain = styled.span<IMain>`
   border: solid black;
   border-width: 0 3px 3px 0;
   display: inline-block;
@@ -32,7 +32,7 @@ const StyledMain = styled.span<TypeMain>`
   -webkit-transform: ${({ $direction }) => `rotate(${degreeMap[$direction]})`};
 `;
 
-export interface IArrowProps extends extendElement<'span'> {
+export interface IArrowProps {
   direction?: TDirection;
   size?: TSize;
 }

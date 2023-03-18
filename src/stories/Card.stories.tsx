@@ -1,9 +1,9 @@
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import { ReactComponent as Share } from '@/assets/share.svg';
-import { ReactComponent as ThumbUp } from '@/assets/thumbUp.svg';
-import { ReactComponent as Bell } from '@/assets/bell.svg';
+import { ReactComponent as Share } from '@/assets/SVG/share.svg';
+import { ReactComponent as ThumbUp } from '@/assets/SVG/thumbUp.svg';
+import { ReactComponent as Bell } from '@/assets/SVG/bell.svg';
 
 import Card, { ICardProps } from '@/components/Card';
 import Meta, { IMetaProps } from '@/components/Card/Meta';

@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
-import Arrow from '../Arrow';
-import Breadcrumbs from './Breadcrumbs';
 import BreadcrumbItem, { IBreadcrumbItemProps } from './BreadcrumbItem';
+import Arrow from '../Arrow';
+
+interface IMain extends extendElement<'div'> {}
+
+const StyledMain = styled.div<IMain>`
+  display: flex;
+  align-items: center;
+`;
+
+const Separator = styled.span`
+  margin: 0px 8px;
+  display: flex;
+  align-items: center;
+`;
+
+const CollapsedContent = styled.span`
+  cursor: pointer;
+`;
 
 export interface IBreadcrumbProps {
   /**
@@ -28,12 +45,34 @@ const Breadcrumb = ({
   maxItems = 8,
   routes = [],
   separator = <Arrow direction="left" />,
-}: IBreadcrumbProps) => (
-  <Breadcrumbs maxItems={maxItems} separator={separator}>
-    {routes.map((route) => (
-      <BreadcrumbItem key={route.label} label={route.label} icon={route.icon} to={route.to} />
-    ))}
-  </Breadcrumbs>
-);
+}: IBreadcrumbProps) => {
+  const [isCollapse, setIsCollapse] = useState(() => maxItems < routes.length);
+
+  if (isCollapse) {
+    return (
+      <StyledMain>
+        <BreadcrumbItem label={routes[0].label} to={routes[0].to} />
+        <Separator>{separator}</Separator>
+        <CollapsedContent onClick={() => setIsCollapse(false)}>...</CollapsedContent>
+        <Separator>{separator}</Separator>
+        <BreadcrumbItem label={routes[routes.length - 1].label} to={routes[routes.length - 1].to} />
+      </StyledMain>
+    );
+  }
+
+  return (
+    <StyledMain>
+      {routes.map((route, index) => {
+        const isLast = index === routes.length - 1;
+        return (
+          <>
+            <BreadcrumbItem key={index} label={route.label} to={route.to} />
+            {isLast ? null : <Separator>{separator}</Separator>}
+          </>
+        );
+      })}
+    </StyledMain>
+  );
+};
 
 export default Breadcrumb;

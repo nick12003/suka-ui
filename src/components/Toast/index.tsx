@@ -2,10 +2,10 @@ import { useRef, useEffect, useState, CSSProperties } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { render } from 'react-dom';
 
-import { ReactComponent as SuccessIcon } from '@/assets/done.svg';
-import { ReactComponent as InfoIcon } from '@/assets/info.svg';
-import { ReactComponent as WarnIcon } from '@/assets/warn.svg';
-import { ReactComponent as ErrorIcon } from '@/assets/error.svg';
+import { ReactComponent as SuccessIcon } from '@/assets/SVG/done.svg';
+import { ReactComponent as InfoIcon } from '@/assets/SVG/info.svg';
+import { ReactComponent as WarnIcon } from '@/assets/SVG/warn.svg';
+import { ReactComponent as ErrorIcon } from '@/assets/SVG/error.svg';
 
 interface IIconProps {
   $color: string;

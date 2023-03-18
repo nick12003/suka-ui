@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { ReactComponent as StarIcon } from '@/assets/star.svg';
+import { ReactComponent as StarIcon } from '@/assets/SVG/star.svg';
 import PropTypes from 'prop-types';
 
 import { useColor } from '@/theme/useColor';

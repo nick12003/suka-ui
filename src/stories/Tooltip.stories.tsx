@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import { ReactComponent as InfoOutlinedIcon } from '@/assets/info.svg';
+import { ReactComponent as InfoOutlinedIcon } from '@/assets/SVG/info.svg';
 import Tooltip, { ITooltipProps } from '../components/Tooltip';
 import Button from '../components/Button';
 import Switch from '../components/Switch';

@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import { ReactComponent as CloudUploadIcon } from '@/assets/cloudUpload.svg';
-import { ReactComponent as RotateLeftIcon } from '@/assets/rotateLeft.svg';
-import { ReactComponent as DeleteOutlineIcon } from '@/assets/deleteOutline.svg';
+import { ReactComponent as CloudUploadIcon } from '@/assets/SVG/cloudUpload.svg';
+import { ReactComponent as RotateLeftIcon } from '@/assets/SVG/rotateLeft.svg';
+import { ReactComponent as DeleteOutlineIcon } from '@/assets/SVG/deleteOutline.svg';
 
-import birdImg from '@/assets/bird.jpeg';
-import duckImg from '@/assets/duck.jpeg';
-import eagleImg from '@/assets/eagle.jpeg';
-import frogImg from '@/assets/frog.jpeg';
+import birdImg from './assets/bird.jpeg';
+import duckImg from './assets/duck.jpeg';
+import eagleImg from './assets/eagle.jpeg';
+import frogImg from './assets/frog.jpeg';
 
 import Upload, { IUploadProps } from '../components/Upload';
 import Button from '../components/Button';

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
-import { ReactComponent as RadioButtonUncheckedIcon } from '@/assets/radioUncheck.svg';
-import { ReactComponent as RadioButtonCheckedIcon } from '@/assets/radioCheck.svg';
+import { ReactComponent as RadioButtonUncheckedIcon } from '@/assets/SVG/radioUncheck.svg';
+import { ReactComponent as RadioButtonCheckedIcon } from '@/assets/SVG/radioCheck.svg';
 
 import Option, { IOptionProps } from '../Option';
 
