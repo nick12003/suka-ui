@@ -40,14 +40,12 @@ const placementStyleMap = {
   `,
 };
 
-interface IMain extends extendElement<'div'> {}
-
-const StyledMain = styled.div<IMain>`
+const StyledMain = styled.div`
   display: inline-flex;
   position: relative;
 `;
 
-interface IBadge extends extendElement<'div'> {
+interface IBadge {
   $color: string;
   $placement: TPlacement;
 }
@@ -121,7 +119,10 @@ export interface IBadgeProps {
   children: React.ReactNode;
 }
 
-const InternalBadge: React.ForwardRefRenderFunction<HTMLDivElement, IBadgeProps> = (
+const InternalBadge: React.ForwardRefRenderFunction<
+  HTMLDivElement,
+  IBadgeProps & extendElement<'div'>
+> = (
   {
     value,
     max = 99,

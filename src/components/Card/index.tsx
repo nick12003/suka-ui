@@ -1,19 +1,56 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-type TVariant = 'vertical' | 'horizontal' | 'horizontal-reverse';
+type TVariant = keyof typeof variantMap;
 
-interface IStyledCardProps {
+const variantMap = {
+  vertical: css`
+    display: inline-flex;
+    flex-direction: column;
+  `,
+  horizontal: css`
+    display: flex;
+  `,
+  'horizontal-reverse': css`
+    display: flex;
+    flex-direction: row-reverse;
+  `,
+};
+
+interface IMain {
   $variant: TVariant;
 }
 
-export interface ICardProps extends React.ComponentPropsWithoutRef<'div'> {
+const StyledMain = styled.div<IMain>`
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+
+  ${(props) => variantMap[props.$variant] || variantMap.vertical}
+`;
+
+const StyledCover = styled.div`
+  overflow: hidden;
+  width: 300px;
+  img {
+    width: 100%;
+    display: block;
+  }
+`;
+
+const StyledSpaceBetween = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+export interface ICardProps {
   /**
    * 卡片封面媒體
    */
   cover?: React.ReactNode;
   /**
-   * 變化模式
+   * 排版變化
    */
   variant?: TVariant;
   /**
@@ -26,63 +63,17 @@ export interface ICardProps extends React.ComponentPropsWithoutRef<'div'> {
   footer?: React.ReactNode;
 }
 
-const verticalStyle = css`
-  display: inline-flex;
-  flex-direction: column;
-`;
-
-const horizontalStyle = css`
-  display: flex;
-`;
-
-const horizontalReverseStyle = css`
-  display: flex;
-  flex-direction: row-reverse;
-`;
-
-const variantMap = {
-  vertical: verticalStyle,
-  horizontal: horizontalStyle,
-  'horizontal-reverse': horizontalReverseStyle,
-};
-
-const StyledCard = styled.div<IStyledCardProps>`
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow: hidden;
-
-  ${(props) => variantMap[props.$variant] || variantMap.vertical}
-`;
-
-const Cover = styled.div`
-  overflow: hidden;
-  width: 300px;
-  img {
-    width: 100%;
-    display: block;
-  }
-`;
-
-const SpaceBetween = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const InternalCard: React.ForwardRefRenderFunction<HTMLDivElement, ICardProps> = ({
-  cover,
-  variant = 'vertical',
-  children,
-  footer,
-  ...props
-}) => (
-  <StyledCard $variant={variant} {...props}>
-    <Cover>{cover}</Cover>
-    <SpaceBetween>
+const InternalCard: React.ForwardRefRenderFunction<
+  HTMLDivElement,
+  ICardProps & extendElement<'div'>
+> = ({ cover, variant = 'vertical', children, footer, ...props }, ref) => (
+  <StyledMain $variant={variant} ref={ref} {...props}>
+    <StyledCover>{cover}</StyledCover>
+    <StyledSpaceBetween>
       {children}
       {footer}
-    </SpaceBetween>
-  </StyledCard>
+    </StyledSpaceBetween>
+  </StyledMain>
 );
 
 /**

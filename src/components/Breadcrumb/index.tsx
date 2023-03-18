@@ -4,9 +4,7 @@ import styled from 'styled-components';
 import BreadcrumbItem, { IBreadcrumbItemProps } from './BreadcrumbItem';
 import Arrow from '../Arrow';
 
-interface IMain extends extendElement<'div'> {}
-
-const StyledMain = styled.div<IMain>`
+const StyledMain = styled.div`
   display: flex;
   align-items: center;
 `;

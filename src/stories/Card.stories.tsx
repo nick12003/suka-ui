@@ -6,11 +6,28 @@ import { ReactComponent as ThumbUp } from '@/assets/SVG/thumbUp.svg';
 import { ReactComponent as Bell } from '@/assets/SVG/bell.svg';
 
 import Card, { ICardProps } from '@/components/Card';
-import Meta, { IMetaProps } from '@/components/Card/Meta';
+import Meta from '@/components/Card/Meta';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '數據展示元件/Card',
   component: Card,
+  argTypes: disableArgs(
+    {
+      variant: {
+        control: 'radio',
+        options: ['vertical', 'horizontal', 'horizontal-reverse'],
+        defaultValue: 'vertical',
+      },
+    },
+    [
+      {
+        args: ['cover', 'children', 'footer'],
+        type: 'control',
+      },
+    ]
+  ),
 };
 
 const Actions = styled.div`
@@ -33,14 +50,6 @@ const VariantGroup = styled.div`
 `;
 
 const Template: Story<ICardProps> = (args) => <Card {...args} />;
-
-const TemplateVariant: Story<ICardProps> = (args) => (
-  <VariantGroup>
-    <Card {...args} style={{ width: 300 }} />
-    <Card {...args} variant="horizontal" />
-    <Card {...args} variant="horizontal-reverse" />
-  </VariantGroup>
-);
 
 const defaultArgs = {
   cover: (
@@ -68,10 +77,5 @@ const defaultArgs = {
 
 export const Default = Template.bind({});
 Default.args = {
-  ...defaultArgs,
-};
-
-export const Variant = TemplateVariant.bind({});
-Variant.args = {
   ...defaultArgs,
 };

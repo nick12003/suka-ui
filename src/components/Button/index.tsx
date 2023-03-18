@@ -50,7 +50,7 @@ const disabledStyle = css`
   }
 `;
 
-interface IMain extends IVariant, extendElement<'button'> {
+interface IMain extends IVariant {
   $variant: TVariant;
 }
 
@@ -114,7 +114,10 @@ export interface IButtonProps {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, IButtonProps> = (
+const InternalButton: React.ForwardRefRenderFunction<
+  HTMLButtonElement,
+  IButtonProps & extendElement<'button'>
+> = (
   {
     children,
     themeColor = 'primary',
