@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
 
-import Carousel, { ICarouselProps } from '@/components/Carousel';
+import Carousel, { ICarouselProps, InternalCarousel } from '@/components/Carousel';
 
 import birdImg from './assets/bird.jpeg';
 import duckImg from './assets/duck.jpeg';
@@ -11,7 +11,7 @@ import { disableArgs } from './utilityStory';
 
 export default {
   title: '數據展示元件/Carousel',
-  component: Carousel,
+  component: InternalCarousel,
   argTypes: disableArgs(
     {
       hasDots: {

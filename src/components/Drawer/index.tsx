@@ -1,154 +1,99 @@
 import React, { useEffect, useState } from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css, keyframes, Keyframes } from 'styled-components';
 
 import Portal from '../Portal';
 
-export type TPlacement = 'top' | 'right' | 'bottom' | 'left';
+export type TPlacement = keyof typeof placementMap;
 
-interface IPlacementProps {
+type TShowAnimation = (isOpen: boolean) => Keyframes;
+
+const showMask: TShowAnimation = (isOpen) => keyframes`
+  0% {
+    opacity: ${isOpen ? 0 : 1};
+  }
+  100% {
+    opacity: ${isOpen ? 1 : 0};
+  }
+`;
+
+const leftShowDrawer: TShowAnimation = (isOpen) => keyframes`
+  0% {
+    left: ${isOpen ? -100 : 0}%;
+  }
+  100% {
+    left: ${isOpen ? 0 : -100}%;
+  }
+`;
+
+const rightShowDrawer: TShowAnimation = (isOpen) => keyframes`
+  0% {
+    right: ${isOpen ? -100 : 0}%;
+  }
+  100% {
+    right: ${isOpen ? 0 : -100}%;
+  }
+`;
+
+const bottomShowDrawer: TShowAnimation = (isOpen) => keyframes`
+  0% {
+    bottom: ${isOpen ? -100 : 0}%;
+  }
+  100% {
+    bottom: ${isOpen ? 0 : -100}%;
+  }
+`;
+
+const topShowDrawer: TShowAnimation = (isOpen) => keyframes`
+  0% {
+    top: ${isOpen ? -100 : 0}%;
+  }
+  100% {
+    top: ${isOpen ? 0 : -100}%;
+  }
+`;
+
+interface IPlacement {
   $isOpen: boolean;
   $animationDuration: number;
 }
-
-interface IMaskProps {
-  $isOpen: boolean;
-  $animationDuration: number;
-}
-
-interface IDrawerWrapperProps extends IPlacementProps {
-  $placement: TPlacement;
-}
-
-const hideMask = keyframes`
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-`;
-
-const showMask = keyframes`
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-`;
-
-const leftShowDrawer = keyframes`
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 0%;
-  }
-`;
-
-const leftHideDrawer = keyframes`
-  0% {
-    left: 0%;
-  }
-  100% {
-    left: -100%;
-  }
-`;
-
-const rightShowDrawer = keyframes`
-  0% {
-    right: -100%;
-  }
-  100% {
-    right: 0%;
-  }
-`;
-
-const rightHideDrawer = keyframes`
-  0% {
-    right: 0%;
-  }
-  100% {
-    right: -100%;
-  }
-`;
-
-const bottomShowDrawer = keyframes`
-  0% {
-    bottom: -100%;
-  }
-  100% {
-    bottom: 0%;
-  }
-`;
-
-const bottomHideDrawer = keyframes`
-  0% {
-    bottom: 0%;
-  }
-  100% {
-    bottom: -100%;
-  }
-`;
-
-const topShowDrawer = keyframes`
-  0% {
-    top: -100%;
-  }
-  100% {
-    top: 0%;
-  }
-`;
-
-const topHideDrawer = keyframes`
-  0% {
-    top: 0%;
-  }
-  100% {
-    top: -100%;
-  }
-`;
-
-const topStyle = css<IPlacementProps>`
-  top: 0px;
-  left: 0px;
-  width: 100vw;
-  animation: ${(props) => (props.$isOpen ? topShowDrawer : topHideDrawer)}
-    ${(props) => props.$animationDuration}ms ease-in-out forwards;
-`;
-
-const bottomStyle = css<IPlacementProps>`
-  bottom: 0px;
-  left: 0px;
-  width: 100vw;
-  animation: ${(props) => (props.$isOpen ? bottomShowDrawer : bottomHideDrawer)}
-    ${(props) => props.$animationDuration}ms ease-in-out forwards;
-`;
-
-const leftStyle = css<IPlacementProps>`
-  top: 0px;
-  left: 0px;
-  height: 100vh;
-  animation: ${(props) => (props.$isOpen ? leftShowDrawer : leftHideDrawer)}
-    ${(props) => props.$animationDuration}ms ease-in-out forwards;
-`;
-
-const rightStyle = css<IPlacementProps>`
-  top: 0px;
-  right: 0px;
-  height: 100vh;
-  animation: ${(props) => (props.$isOpen ? rightShowDrawer : rightHideDrawer)}
-    ${(props) => props.$animationDuration}ms ease-in-out forwards;
-`;
 
 const placementMap = {
-  top: topStyle,
-  right: rightStyle,
-  bottom: bottomStyle,
-  left: leftStyle,
+  top: css<IPlacement>`
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    animation: ${(props) => topShowDrawer(props.$isOpen)} ${(props) => props.$animationDuration}ms
+      ease-in-out forwards;
+  `,
+  right: css<IPlacement>`
+    top: 0px;
+    right: 0px;
+    height: 100vh;
+    animation: ${(props) => rightShowDrawer(props.$isOpen)} ${(props) => props.$animationDuration}ms
+      ease-in-out forwards;
+  `,
+  bottom: css<IPlacement>`
+    bottom: 0px;
+    left: 0px;
+    width: 100vw;
+    animation: ${(props) => bottomShowDrawer(props.$isOpen)}
+      ${(props) => props.$animationDuration}ms ease-in-out forwards;
+  `,
+  left: css<IPlacement>`
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    animation: ${(props) => leftShowDrawer(props.$isOpen)} ${(props) => props.$animationDuration}ms
+      ease-in-out forwards;
+  `,
 };
 
-const Mask = styled.div<IMaskProps>`
+interface IMask {
+  $isOpen: boolean;
+  $animationDuration: number;
+}
+
+const StyledMask = styled.div<IMask>`
   position: fixed;
   top: 0px;
   left: 0px;
@@ -156,11 +101,15 @@ const Mask = styled.div<IMaskProps>`
   height: 100vh;
   background: #00000080;
   z-index: 2;
-  animation: ${(props) => (props.$isOpen ? showMask : hideMask)}
-    ${(props) => props.$animationDuration}ms ease-in-out forwards;
+  animation: ${(props) => showMask(props.$isOpen)} ${(props) => props.$animationDuration}ms
+    ease-in-out forwards;
 `;
 
-const DrawerWrapper = styled.div<IDrawerWrapperProps>`
+interface IMain extends IPlacement {
+  $placement: TPlacement;
+}
+
+const StyledMain = styled.div<IMain>`
   position: fixed;
   z-index: 3;
   background: #fff;
@@ -190,7 +139,11 @@ export interface IDrawerProps {
   children: React.ReactNode;
 }
 
-const InternalDrawer: React.ForwardRefRenderFunction<HTMLDivElement, IDrawerProps> = (
+/**
+ * `Drawer` 抽屜元件，由螢幕邊緣滑出的浮動面版，
+ * 常見的應用是作為導航用途，例如 Navigation drawers。
+ */
+export const InternalDrawer: React.ForwardRefRenderFunction<HTMLDivElement, IDrawerProps> = (
   { children, isOpen = false, placement = 'left', onClose, animationDuration = 200, ...props },
   ref
 ) => {
@@ -208,8 +161,8 @@ const InternalDrawer: React.ForwardRefRenderFunction<HTMLDivElement, IDrawerProp
 
   return !removeDOM ? (
     <Portal>
-      <Mask $isOpen={isOpen} $animationDuration={animationDuration} onClick={onClose} />
-      <DrawerWrapper
+      <StyledMask $isOpen={isOpen} $animationDuration={animationDuration} onClick={onClose} />
+      <StyledMain
         ref={ref}
         $isOpen={isOpen}
         $placement={placement}
@@ -217,17 +170,14 @@ const InternalDrawer: React.ForwardRefRenderFunction<HTMLDivElement, IDrawerProp
         {...props}
       >
         {children}
-      </DrawerWrapper>
+      </StyledMain>
     </Portal>
   ) : (
     <></>
   );
 };
 
-/**
- * `Drawer` 抽屜元件，由螢幕邊緣滑出的浮動面版，
- * 常見的應用是作為導航用途，例如 Navigation drawers。
- */
-const Drawer = React.forwardRef(InternalDrawer);
+const Drawer =
+  React.forwardRef<HTMLDivElement, IDrawerProps & extendElement<'div'>>(InternalDrawer);
 
 export default Drawer;

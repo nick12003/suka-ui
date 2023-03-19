@@ -1,11 +1,12 @@
 import { Story } from '@storybook/react';
 
-import Button, { IButtonProps } from '@/components/Button';
+import Button, { IButtonProps, InternalButton } from '@/components/Button';
+import { ReactComponent as Bell } from '@/assets/SVG/bell.svg';
 import { disableArgs } from './utilityStory';
 
 export default {
   title: '數據輸入元件/Button',
-  component: Button,
+  component: InternalButton,
   argTypes: disableArgs(
     {
       children: {
@@ -47,6 +48,12 @@ export default {
 const Template: Story<IButtonProps> = (args) => <Button {...args} />;
 
 export const Default = Template.bind({});
+
+export const IconButton = Template.bind({});
+IconButton.storyName = '前置置Icon';
+IconButton.args = {
+  startIcon: <Bell />,
+};
 
 export const Outlined = Template.bind({});
 Outlined.storyName = '外框樣式';

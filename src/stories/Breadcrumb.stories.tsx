@@ -5,11 +5,11 @@ import { ReactComponent as HomeIcon } from '@/assets/SVG/home.svg';
 import { ReactComponent as SchoolIcon } from '@/assets/SVG/school.svg';
 import { ReactComponent as SupervisorAccountIcon } from '@/assets/SVG/supervisor.svg';
 import { ReactComponent as AssignmentIndIcon } from '@/assets/SVG/assignmentInd.svg';
-import Breadcrumb, { IBreadcrumbProps } from '@/components/Breadcrumb';
+import Breadcrumb, { IBreadcrumbProps, InternalBreadcrumb } from '@/components/Breadcrumb';
 
 export default {
   title: '導航元件/Breadcrumb',
-  component: Breadcrumb,
+  component: InternalBreadcrumb,
   argTypes: {
     separator: {
       control: 'text',
@@ -97,17 +97,20 @@ Default.args = {
 };
 
 export const WithIcon = Template.bind({});
+WithIcon.storyName = '加上Icon';
 WithIcon.args = {
   routes: routesWithIcon,
 };
 
 export const WithCustomSeparator = Template.bind({});
+WithCustomSeparator.storyName = '自訂分隔符號';
 WithCustomSeparator.args = {
   separator: '/',
   routes: routesWithIcon,
 };
 
 export const WithMaxItems = Template.bind({});
+WithMaxItems.storyName = '設定摺疊';
 WithMaxItems.args = {
   maxItems: 2,
   routes: routesWithIcon,

@@ -63,10 +63,13 @@ export interface ICardProps {
   footer?: React.ReactNode;
 }
 
-const InternalCard: React.ForwardRefRenderFunction<
-  HTMLDivElement,
-  ICardProps & extendElement<'div'>
-> = ({ cover, variant = 'vertical', children, footer, ...props }, ref) => (
+/**
+ * `Card` 是一個可以顯示單個主題內容及操作的元件，通常這個主題內容包含圖片、標題、描述或是一些操作。
+ */
+export const InternalCard: React.ForwardRefRenderFunction<HTMLDivElement, ICardProps> = (
+  { cover, variant = 'vertical', children, footer, ...props },
+  ref
+) => (
   <StyledMain $variant={variant} ref={ref} {...props}>
     <StyledCover>{cover}</StyledCover>
     <StyledSpaceBetween>
@@ -76,9 +79,6 @@ const InternalCard: React.ForwardRefRenderFunction<
   </StyledMain>
 );
 
-/**
- * `Card` 是一個可以顯示單個主題內容及操作的元件，通常這個主題內容包含圖片、標題、描述或是一些操作。
- */
-const Card = React.forwardRef(InternalCard);
+const Card = React.forwardRef<HTMLDivElement, ICardProps & extendElement<'div'>>(InternalCard);
 
 export default Card;

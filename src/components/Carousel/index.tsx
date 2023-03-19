@@ -98,10 +98,17 @@ export interface ICarouselProps {
   autoplay: boolean;
 }
 
-const InternalCarousel: React.ForwardRefRenderFunction<
-  HTMLDivElement,
-  ICarouselProps & extendElement<'div'>
-> = ({ dataSource, hasDots = true, hasControlArrow = true, autoplay = false, ...props }) => {
+/**
+ * `Carousel` 是一個像旋轉木馬一樣會輪流轉的輪播元件。
+ * 在一個內容空間有限的可視範圍中進行內容的輪播展示。通常適用於一組圖片或是卡片的輪播。
+ */
+export const InternalCarousel: React.ForwardRefRenderFunction<HTMLDivElement, ICarouselProps> = ({
+  dataSource,
+  hasDots = true,
+  hasControlArrow = true,
+  autoplay = false,
+  ...props
+}) => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageWidth, setImageWidth] = useState(600);
@@ -186,10 +193,7 @@ const InternalCarousel: React.ForwardRefRenderFunction<
   );
 };
 
-/**
- * `Carousel` 是一個像旋轉木馬一樣會輪流轉的輪播元件。
- * 在一個內容空間有限的可視範圍中進行內容的輪播展示。通常適用於一組圖片或是卡片的輪播。
- */
-const Carousel = React.forwardRef(InternalCarousel);
+const Carousel =
+  React.forwardRef<HTMLDivElement, ICarouselProps & extendElement<'div'>>(InternalCarousel);
 
 export default Carousel;

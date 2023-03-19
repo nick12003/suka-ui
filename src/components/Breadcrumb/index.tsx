@@ -39,38 +39,41 @@ export interface IBreadcrumbProps {
  * 在系統有多個層級架構，並且希望能幫助用戶清楚知道自己目前層級位置，
  * 及希望用戶能方便返回上面層級時，能夠使用麵包屑元件。
  */
-const Breadcrumb = ({
-  maxItems = 8,
-  routes = [],
-  separator = <Arrow direction="left" />,
-}: IBreadcrumbProps) => {
-  const [isCollapse, setIsCollapse] = useState(() => maxItems < routes.length);
+export const InternalBreadcrumb: React.ForwardRefRenderFunction<HTMLDivElement, IBreadcrumbProps> =
+  ({ maxItems = 8, routes = [], separator = <Arrow direction="left" />, ...props }, ref) => {
+    const [isCollapse, setIsCollapse] = useState(() => maxItems < routes.length);
 
-  if (isCollapse) {
+    if (isCollapse) {
+      return (
+        <StyledMain ref={ref} {...props}>
+          <BreadcrumbItem label={routes[0].label} to={routes[0].to} />
+          <Separator>{separator}</Separator>
+          <CollapsedContent onClick={() => setIsCollapse(false)}>...</CollapsedContent>
+          <Separator>{separator}</Separator>
+          <BreadcrumbItem
+            label={routes[routes.length - 1].label}
+            to={routes[routes.length - 1].to}
+          />
+        </StyledMain>
+      );
+    }
+
     return (
       <StyledMain>
-        <BreadcrumbItem label={routes[0].label} to={routes[0].to} />
-        <Separator>{separator}</Separator>
-        <CollapsedContent onClick={() => setIsCollapse(false)}>...</CollapsedContent>
-        <Separator>{separator}</Separator>
-        <BreadcrumbItem label={routes[routes.length - 1].label} to={routes[routes.length - 1].to} />
+        {routes.map((route, index) => {
+          const isLast = index === routes.length - 1;
+          return (
+            <>
+              <BreadcrumbItem key={index} label={route.label} to={route.to} />
+              {isLast ? null : <Separator>{separator}</Separator>}
+            </>
+          );
+        })}
       </StyledMain>
     );
-  }
+  };
 
-  return (
-    <StyledMain>
-      {routes.map((route, index) => {
-        const isLast = index === routes.length - 1;
-        return (
-          <>
-            <BreadcrumbItem key={index} label={route.label} to={route.to} />
-            {isLast ? null : <Separator>{separator}</Separator>}
-          </>
-        );
-      })}
-    </StyledMain>
-  );
-};
+const Breadcrumb =
+  React.forwardRef<HTMLDivElement, IBreadcrumbProps & extendElement<'div'>>(InternalBreadcrumb);
 
 export default Breadcrumb;

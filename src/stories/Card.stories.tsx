@@ -5,14 +5,14 @@ import { ReactComponent as Share } from '@/assets/SVG/share.svg';
 import { ReactComponent as ThumbUp } from '@/assets/SVG/thumbUp.svg';
 import { ReactComponent as Bell } from '@/assets/SVG/bell.svg';
 
-import Card, { ICardProps } from '@/components/Card';
+import Card, { ICardProps, InternalCard } from '@/components/Card';
 import Meta from '@/components/Card/Meta';
 
 import { disableArgs } from './utilityStory';
 
 export default {
   title: '數據展示元件/Card',
-  component: Card,
+  component: InternalCard,
   argTypes: disableArgs(
     {
       variant: {

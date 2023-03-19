@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { ComponentStory } from '@storybook/react';
+import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import Collapse from '@/components/Collapse';
+import Collapse, { ICollapseProps, InternalCollapse } from '@/components/Collapse';
 import Button from '@/components/Button';
 import { disableArgs } from './utilityStory';
 
 export default {
   title: '數據展示元件/Collapse',
-  component: Collapse,
+  component: InternalCollapse,
   argTypes: disableArgs(
     {
       isExpand: {
@@ -42,8 +42,8 @@ export default {
   ),
 };
 
-const Template: ComponentStory<typeof Collapse> = (args) => {
-  return <Collapse {...args} />;
+const Template: Story<ICollapseProps> = (args) => {
+  return <Collapse onClick={undefined} {...args} />;
 };
 
 export const Default = Template.bind({});
@@ -68,7 +68,7 @@ const Panel = styled.div`
   padding: 16px;
 `;
 
-const TemplateControl: ComponentStory<typeof Collapse> = (args) => {
+const TemplateControl: Story<ICollapseProps> = (args) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -108,7 +108,7 @@ const AccordionGroup = styled.div`
   }
 `;
 
-const TemplateAccordion: ComponentStory<typeof Collapse> = (args) => {
+const TemplateAccordion: Story<ICollapseProps> = (args) => {
   const [activeKey, setActiveKey] = useState<number | null>(null);
 
   return (

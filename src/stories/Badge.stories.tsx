@@ -2,12 +2,12 @@ import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
 import { ReactComponent as Line } from '@/assets/SVG/line.svg';
-import Badge, { IBadgeProps } from '@/components/Badge';
+import Badge, { IBadgeProps, InternalBadge } from '@/components/Badge';
 import { disableArgs } from './utilityStory';
 
 export default {
   title: '數據展示元件/Badge',
-  component: Badge,
+  component: InternalBadge,
   argTypes: disableArgs(
     {
       max: {

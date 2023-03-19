@@ -1,12 +1,31 @@
 import { useState } from 'react';
+import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import Dropdown from '@/components/Dropdown';
+import Dropdown, { IDropdownProps, InternalDropdown } from '@/components/Dropdown';
 import Button from '@/components/Button';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '導航元件/Dropdown',
-  component: Dropdown,
+  component: InternalDropdown,
+  argTypes: disableArgs(
+    {
+      placement: {
+        defaultValue: 'bottom',
+      },
+      isOpen: {
+        defaultValue: false,
+      },
+    },
+    [
+      {
+        args: ['onClick', 'onClose', 'children', 'overlay'],
+        type: 'control',
+      },
+    ]
+  ),
 };
 
 const DropdownGroup = styled.div`
@@ -15,10 +34,11 @@ const DropdownGroup = styled.div`
   }
 `;
 
-const Template = () => {
+const Template: Story<IDropdownProps> = (args) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Dropdown
+      {...args}
       isOpen={isOpen}
       onClick={() => setIsOpen(true)}
       onClose={() => setIsOpen(false)}
@@ -31,7 +51,7 @@ const Template = () => {
   );
 };
 
-const TemplatePlacement = () => {
+const TemplatePlacement: Story = () => {
   const [isOpenBottomLeft, setIsOpenBottomLeft] = useState(false);
   const [isOpenTop, setIsOpenTop] = useState(false);
   const [isOpenTopLeft, setIsOpenLeft] = useState(false);
@@ -78,3 +98,4 @@ const TemplatePlacement = () => {
 export const Default = Template.bind({});
 
 export const WithPlacement = TemplatePlacement.bind({});
+WithPlacement.storyName = '更換顯示位置';

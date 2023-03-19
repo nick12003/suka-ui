@@ -76,10 +76,11 @@ export interface ICollapseProps {
   panelProps?: extendElement<'div'>;
 }
 
-const InternalCollapse: React.ForwardRefRenderFunction<
-  HTMLDivElement,
-  ICollapseProps & extendElement<'div'>
-> = (
+/**
+ * `Collapse` 是一個可折疊/展開內容區域的元件。
+ * 主要是針對顯示內容複雜或很多的頁面進行分區塊的顯示及隱藏。
+ */
+export const InternalCollapse: React.ForwardRefRenderFunction<HTMLDivElement, ICollapseProps> = (
   {
     isExpand: isExpandOuter,
     expandIcon,
@@ -130,10 +131,9 @@ const InternalCollapse: React.ForwardRefRenderFunction<
   );
 };
 
-/**
- * `Collapse` 是一個可折疊/展開內容區域的元件。
- * 主要是針對顯示內容複雜或很多的頁面進行分區塊的顯示及隱藏。
- */
-const Collapse = React.forwardRef(InternalCollapse);
+const Collapse =
+  React.forwardRef<HTMLDivElement, ICollapseProps & Omit<extendElement<'div'>, 'onClick'>>(
+    InternalCollapse
+  );
 
 export default Collapse;

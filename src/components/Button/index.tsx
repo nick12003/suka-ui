@@ -114,10 +114,10 @@ export interface IButtonProps {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const InternalButton: React.ForwardRefRenderFunction<
-  HTMLButtonElement,
-  IButtonProps & extendElement<'button'>
-> = (
+/**
+ * `Button` 元件代表一個可點擊的按鈕，在使用者點擊之後會觸發相對應的業務邏輯。
+ */
+export const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, IButtonProps> = (
   {
     children,
     themeColor = 'primary',
@@ -154,9 +154,7 @@ const InternalButton: React.ForwardRefRenderFunction<
   );
 };
 
-/**
- * `Button` 元件代表一個可點擊的按鈕，在使用者點擊之後會觸發相對應的業務邏輯。
- */
-const Button = React.forwardRef(InternalButton);
+const Button =
+  React.forwardRef<HTMLButtonElement, IButtonProps & extendElement<'button'>>(InternalButton);
 
 export default Button;

@@ -2,12 +2,38 @@ import { useState } from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import Button from '../components/Button';
-import Drawer, { IDrawerProps, TPlacement } from '../components/Drawer';
+import Button from '@/components/Button';
+import Drawer, { IDrawerProps, TPlacement, InternalDrawer } from '@/components/Drawer';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '導航元件/Drawer',
-  component: Drawer,
+  component: InternalDrawer,
+  argTypes: disableArgs(
+    {
+      placement: {
+        control: 'radio',
+        options: ['top', 'right', 'bottom-reverse', 'left'],
+        defaultValue: 'left',
+      },
+      isOpen: {
+        defaultValue: false,
+      },
+      animationDuration: {
+        defaultValue: 200,
+      },
+      children: {
+        type: { name: 'string' },
+      },
+    },
+    [
+      {
+        args: ['onClose', 'isOpen', 'children'],
+        type: 'control',
+      },
+    ]
+  ),
 };
 
 const ButtonGroup = styled.div`

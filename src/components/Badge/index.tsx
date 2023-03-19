@@ -6,10 +6,10 @@ const makeBadgeValue: (arg: { showZero: boolean; max: number; value: number }) =
   show: boolean;
   showValue?: string | number;
 } = ({ showZero, max, value }) => {
-  if (showZero && value === 0) {
+  if (showZero && value <= 0) {
     return { show: true, showValue: 0 };
   }
-  if (!showZero && value === 0) {
+  if (!showZero && value <= 0) {
     return { show: false };
   }
   return { show: true, showValue: value > max ? `${max}+` : value };
@@ -119,10 +119,11 @@ export interface IBadgeProps {
   children: React.ReactNode;
 }
 
-const InternalBadge: React.ForwardRefRenderFunction<
-  HTMLDivElement,
-  IBadgeProps & extendElement<'div'>
-> = (
+/**
+ * `Badge` 可以讓我們在其 children element 的右上角(預設位置)顯示一個小徽章，
+ * 通常用來表示需要處理的訊息數量，透過醒目的視覺形式來吸引用戶處理。
+ */
+export const InternalBadge: React.ForwardRefRenderFunction<HTMLDivElement, IBadgeProps> = (
   {
     value,
     max = 99,
@@ -160,10 +161,6 @@ const InternalBadge: React.ForwardRefRenderFunction<
   );
 };
 
-/**
- * `Badge` 可以讓我們在其 children element 的右上角(預設位置)顯示一個小徽章，
- * 通常用來表示需要處理的訊息數量，透過醒目的視覺形式來吸引用戶處理。
- */
-const Badge = React.forwardRef(InternalBadge);
+const Badge = React.forwardRef<HTMLDivElement, IBadgeProps & extendElement<'div'>>(InternalBadge);
 
 export default Badge;

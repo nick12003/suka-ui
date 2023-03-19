@@ -5,60 +5,30 @@ import classNames from 'classnames';
 import { ReactComponent as Cancel } from '@/assets/SVG/cancel.svg';
 import { useColor } from '@/theme/useColor';
 
-type TVariant = 'contained' | 'outlined';
-interface IVariantProps {
+type TVariant = keyof typeof variantMap;
+
+interface IVariant {
   $color: string;
 }
 
-interface IStyledChipProps {
+const variantMap = {
+  contained: css<IVariant>`
+    background: ${(props) => props.$color};
+    color: #fff;
+  `,
+  outlined: css<IVariant>`
+    background: #fff;
+    color: ${(props) => props.$color};
+  `,
+};
+
+interface IMain {
   $color: string;
   $variant: TVariant;
   $hasDelete: boolean;
 }
 
-export interface IChipProps extends React.ComponentPropsWithoutRef<'div'> {
-  /**
-   * 設置變化模式
-   */
-  variant?: TVariant;
-  /**
-   * 內容
-   */
-  label: React.ReactNode;
-  /**
-   * 主題配色，primary、secondary 或是自己傳入色票
-   */
-  themeColor?: string;
-  /**
-   * 圖示
-   */
-  icon?: React.ReactElement;
-  /**
-   * 刪除圖示
-   */
-  deleteIcon?: React.ReactElement;
-  /**
-   * 刪除事件
-   */
-  onDelete?: React.MouseEventHandler<HTMLOrSVGElement>;
-}
-
-const containedStyle = css<IVariantProps>`
-  background: ${(props) => props.$color};
-  color: #fff;
-`;
-
-const outlinedStyle = css<IVariantProps>`
-  background: #fff;
-  color: ${(props) => props.$color};
-`;
-
-const variantMap = {
-  contained: containedStyle,
-  outlined: outlinedStyle,
-};
-
-const StyledChip = styled.div<IStyledChipProps>`
+const StyledMain = styled.div<IMain>`
   display: inline-flex;
   align-items: center;
   border-radius: 50px;
@@ -82,36 +52,63 @@ const StyledChip = styled.div<IStyledChipProps>`
   }
 `;
 
-const Label = styled.span`
+const StyledLabel = styled.span`
   padding: 0px 12px;
 `;
 
-const InternalChip: React.ForwardRefRenderFunction<HTMLDivElement, IChipProps> = (
-  { variant = 'contained', label, themeColor = 'primary', icon, deleteIcon, onDelete, ...props },
+export interface IChipProps {
+  /**
+   * 設置變化模式
+   */
+  variant?: TVariant;
+  /**
+   * 內容
+   */
+  children: React.ReactNode;
+  /**
+   * 主題配色，primary、secondary 或是自己傳入色票
+   */
+  themeColor?: TThemeColor;
+  /**
+   * 圖示
+   */
+  icon?: React.ReactElement;
+  /**
+   * 刪除圖示
+   */
+  deleteIcon?: React.ReactElement;
+  /**
+   * 刪除事件
+   */
+  onDelete?: React.MouseEventHandler<SVGSVGElement>;
+}
+
+/**
+ * `Chip` 元件用於標記事物的屬性、標籤或用於分類、篩選。
+ */
+export const InternalChip: React.ForwardRefRenderFunction<HTMLDivElement, IChipProps> = (
+  { variant = 'contained', children, themeColor = 'primary', icon, deleteIcon, onDelete, ...props },
   ref
 ) => {
   const { makeColor } = useColor();
   const color = makeColor({ themeColor });
   const endIcon = deleteIcon || <Cancel />;
   return (
-    <StyledChip ref={ref} $variant={variant} $color={color} $hasDelete={!!onDelete} {...props}>
+    <StyledMain ref={ref} $variant={variant} $color={color} $hasDelete={!!onDelete} {...props}>
       {icon &&
         React.cloneElement(icon, {
           className: classNames(icon.props.className, 'chip__start-icon'),
         })}
-      <Label>{label}</Label>
+      <StyledLabel>{children}</StyledLabel>
       {(deleteIcon || onDelete) &&
         React.cloneElement(endIcon, {
           className: 'chip__end-icon',
           onClick: onDelete,
         })}
-    </StyledChip>
+    </StyledMain>
   );
 };
 
-/**
- * `Chip` 元件用於標記事物的屬性、標籤或用於分類、篩選。
- */
-const Chip = React.forwardRef(InternalChip);
+const Chip = React.forwardRef<HTMLDivElement, IChipProps & extendElement<'div'>>(InternalChip);
 
 export default Chip;
