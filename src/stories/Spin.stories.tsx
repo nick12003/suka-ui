@@ -2,14 +2,29 @@ import { useState } from 'react';
 import { Story } from '@storybook/react';
 import styled, { keyframes } from 'styled-components';
 
-import Spin, { ISpinProps } from '../components/Spin';
+import Spin, { ISpinProps, InternalSpin } from '../components/Spin';
 import Switch from '../components/Switch';
-import FormControl from '../components/FormControl';
 import { ReactComponent as Spinner } from '@/assets/SVG/spinner.svg';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '反饋元件/Spin',
-  component: Spin,
+  component: InternalSpin,
+  argTypes: disableArgs(
+    {
+      isLoading: {
+        control: 'boolean',
+        defaultValue: false,
+      },
+    },
+    [
+      {
+        args: ['indicator', 'children'],
+        type: 'control',
+      },
+    ]
+  ),
 };
 
 const rotateAnimation = keyframes`
@@ -25,6 +40,10 @@ const RotateContainer = styled.div`
   width: 40px;
   height: 40px;
   animation: ${rotateAnimation} 1000ms ease-in-out infinite;
+  & svg {
+    height: 100%;
+    width: 100%;
+  }
 `;
 
 const MockContent = styled.div`
@@ -87,25 +106,30 @@ const TemplateSpinContainer: Story<ISpinProps> = (args) => {
           </p>
         </MockContent>
       </Spin>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <FormControl placement="left" label="是否正在載入中">
+      <div>
+        <div>
+          <div>是否載入中</div>
           <Switch isChecked={isChecked} onChange={() => setIsChecked((prev) => !prev)} />
-        </FormControl>
-        <FormControl placement="left" label="自定義載入符號" style={{ marginTop: 20 }}>
+        </div>
+        <div>
+          <div> 自訂義符號</div>
           <Switch
             isChecked={useCustomIndicator}
             onChange={() => {
-              console.log('123');
               setUseCustomIndicator((prev) => !prev);
             }}
           />
-        </FormControl>
+        </div>
       </div>
     </div>
   );
 };
 
 export const Default = Template.bind({});
+Default.args = {
+  children: '背景',
+  isLoading: true,
+};
 
 export const CustomIndicator = Template.bind({});
 CustomIndicator.args = {

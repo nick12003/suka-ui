@@ -1,29 +1,7 @@
-import { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import CircularProgress from '../CircularProgress';
-
-interface IIndicator {
-  $indicatorSize: {
-    height: number;
-    width: number;
-  };
-}
-
-export interface ISpinProps extends React.ComponentPropsWithoutRef<'div'> {
-  /**
-   * 自定義載入符號
-   */
-  indicator?: string | React.ReactElement;
-  /**
-   * 是否載入中
-   */
-  isLoading: boolean;
-  /**
-   * 內容
-   */
-  children: React.ReactNode;
-}
 
 const StyledSpin = styled.div`
   display: inline-flex;
@@ -32,7 +10,7 @@ const StyledSpin = styled.div`
   }
 `;
 
-const SpinContainer = styled.div`
+const StyledMain = styled.div`
   display: inline-flex;
   svg {
     color: ${(props) => props.theme.color.primary};
@@ -40,7 +18,14 @@ const SpinContainer = styled.div`
   position: relative;
 `;
 
-const Indicator = styled.div<IIndicator>`
+interface IIndicator {
+  $indicatorSize: {
+    height: number;
+    width: number;
+  };
+}
+
+const StyledIndicator = styled.div<IIndicator>`
   position: absolute;
   top: 0;
   left: 0;
@@ -56,7 +41,7 @@ const Indicator = styled.div<IIndicator>`
   }
 `;
 
-const Mask = styled.div`
+const StyledMask = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
@@ -64,16 +49,29 @@ const Mask = styled.div`
   opacity: 0.8;
 `;
 
+export interface ISpinProps {
+  /**
+   * 自定義載入符號
+   */
+  indicator?: string | React.ReactElement;
+  /**
+   * 是否載入中
+   */
+  isLoading: boolean;
+  /**
+   * 內容
+   */
+  children: React.ReactNode;
+}
+
 /**
  * `Spin` 是一個載入狀態元件，當頁面正在處理非同步行為，
  * 或需要讓用戶等待的作業時，用來顯示以緩解用戶等待的焦慮。
  */
-const Spin = ({
-  indicator = <CircularProgress />,
-  isLoading = false,
-  children,
-  ...props
-}: ISpinProps) => {
+export const InternalSpin: React.ForwardRefRenderFunction<HTMLDivElement, ISpinProps> = (
+  { indicator = <CircularProgress />, isLoading = false, children, ...props },
+  ref
+) => {
   const indicatorRef = useRef<HTMLDivElement>(null);
   const [indicatorSize, setIndicatorSize] = useState({
     width: 0,
@@ -92,18 +90,24 @@ const Spin = ({
     return <StyledSpin {...props}>{indicator}</StyledSpin>;
   }
   return (
-    <SpinContainer {...props}>
+    <StyledMain ref={ref} {...props}>
       {children}
       {isLoading && (
         <>
-          <Mask />
-          <Indicator ref={indicatorRef} className="spin__indicator" $indicatorSize={indicatorSize}>
+          <StyledMask />
+          <StyledIndicator
+            ref={indicatorRef}
+            className="spin__indicator"
+            $indicatorSize={indicatorSize}
+          >
             {indicator}
-          </Indicator>
+          </StyledIndicator>
         </>
       )}
-    </SpinContainer>
+    </StyledMain>
   );
 };
+
+const Spin = React.forwardRef<HTMLDivElement, ISpinProps & extendElement<'div'>>(InternalSpin);
 
 export default Spin;

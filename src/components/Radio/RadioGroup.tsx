@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import { RadioProvider, TValue, TOnChange } from './RadioContext';
 
-interface IStyledRadioGroup {
+import useValue from '@/hooks/useValue';
+
+interface IMain {
   $columns: number;
 }
 
-const StyledRadioGroup = styled.div<IStyledRadioGroup>`
+const StyledMain = styled.div<IMain>`
   display: grid;
   grid-template-columns: repeat(${(props) => props.$columns}, 1fr);
   grid-gap: 8px;
 `;
 
-export type IRadioGroupProps = React.ComponentPropsWithoutRef<'div'> & {
+export interface IRadioGroupProps {
   columns?: number;
   /**
    * default value
@@ -26,50 +28,42 @@ export type IRadioGroupProps = React.ComponentPropsWithoutRef<'div'> & {
   /**
    * children of RadioGroup
    */
-  children?: any;
+  children?: React.ReactNode;
   /**
    * callback when event on change
    */
-  handleChange?: TOnChange;
-};
-
-const InitializesValue: (value: TValue, defaultValue: TValue) => TValue = (value, defaultValue) => {
-  if (value) return value;
-  if (defaultValue) return defaultValue;
-  return null;
-};
+  onChange?: TOnChange;
+}
 
 const InternalRadioGroup: React.ForwardRefRenderFunction<HTMLDivElement, IRadioGroupProps> = (
-  props
+  { columns = 1, value, defaultValue = null, children, onChange, ...props },
+  ref
 ) => {
-  const [internalValue, setInternalValue] = useState(() =>
-    InitializesValue(props.value ?? null, props.defaultValue ?? null)
-  );
+  const [internalValue, setInternalValue] = useValue(defaultValue, value);
 
   const onRadioChange = (newValue: TValue) => {
     const lastValue = internalValue;
-    if (!('value' in props)) {
+    if (value !== undefined) {
       setInternalValue(newValue);
     }
-    const { handleChange } = props;
-    if (handleChange && newValue !== lastValue) {
-      handleChange(newValue);
+    if (onChange && newValue !== lastValue) {
+      onChange(newValue);
     }
   };
 
-  useEffect(() => {
-    setInternalValue(props.value as TValue);
-  }, [props.value]);
-
   return (
-    <StyledRadioGroup $columns={props.columns ?? 1} {...props}>
+    <StyledMain ref={ref} $columns={columns} {...props}>
       <RadioProvider value={{ value: internalValue, onChange: onRadioChange }}>
-        {props.children}
+        {children}
       </RadioProvider>
-    </StyledRadioGroup>
+    </StyledMain>
   );
 };
 
-const RadioGroup = React.forwardRef(InternalRadioGroup);
+const RadioGroup =
+  React.forwardRef<
+    HTMLDivElement,
+    IRadioGroupProps & Omit<extendElement<'div'>, 'onChange' | 'defaultValue'>
+  >(InternalRadioGroup);
 
 export default RadioGroup;

@@ -4,85 +4,60 @@ import styled from 'styled-components';
 
 import Button from '@/components/Button';
 import { TOnChange, TValue } from '@/components/Radio/RadioContext';
-import Radio, { IRadioProps } from '@/components/Radio';
+import Radio, { IRadioProps, InternalRadio } from '@/components/Radio';
 import RadioGroup, { IRadioGroupProps } from '@/components/Radio/RadioGroup';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '數據輸入元件/Radio',
-  component: Radio,
-  argTypes: {
-    themeColor: { control: 'color' },
-  },
+  component: InternalRadio,
+  argTypes: disableArgs(
+    {
+      children: {
+        type: { name: 'string' },
+      },
+      value: {
+        type: { name: 'string' },
+        defaultValue: 'radio',
+      },
+      isChecked: {
+        control: 'boolean',
+        defaultValue: false,
+      },
+      defaultChecked: {
+        control: 'boolean',
+        defaultValue: false,
+      },
+      size: {
+        control: 'radio',
+        options: ['small', 'medium', 'large'],
+        defaultValue: 'medium',
+      },
+      isDisabled: {
+        control: 'boolean',
+        defaultValue: false,
+      },
+      themeColor: {
+        defaultValue: 'primary',
+        control: { type: 'color', presetColors: ['primary', 'secondary', 'disable', 'error'] },
+        table: {
+          type: {
+            summary: 'TThemeColor',
+          },
+        },
+      },
+    },
+    [
+      {
+        args: ['onChange', 'checkedIcon', 'unCheckedIcon'],
+        type: 'control',
+      },
+    ]
+  ),
 };
-
-const RadioWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-`;
 
 const Template: Story<IRadioProps> = (args) => <Radio {...args} />;
-
-const TemplateWithState: Story<IRadioProps> = (args) => {
-  const { isChecked: defaultChecked } = args;
-  const [isChecked, setIsChecked] = useState(defaultChecked);
-
-  const handleOnClick = () => {
-    setIsChecked(true);
-  };
-
-  useEffect(() => {
-    setIsChecked(defaultChecked);
-  }, [defaultChecked]);
-
-  return (
-    <RadioWrapper>
-      <Radio {...args} isChecked={isChecked} onClick={handleOnClick} />
-      <Button variant="outlined" onClick={() => setIsChecked(false)}>
-        重設
-      </Button>
-    </RadioWrapper>
-  );
-};
-
-const TemplateWithColorPicker: Story<IRadioProps> = (args) => {
-  const { isChecked: defaultChecked } = args;
-  const defaultColor = '#FE6B8B';
-  const [isChecked, setIsChecked] = useState(defaultChecked);
-  const [pickedColor, setPickedColor] = useState(defaultColor);
-
-  const handleOnClick = () => {
-    setIsChecked(true);
-  };
-
-  useEffect(() => {
-    setIsChecked(defaultChecked);
-  }, [defaultChecked]);
-
-  return (
-    <RadioWrapper>
-      <Radio {...args} themeColor={pickedColor} isChecked={isChecked} onClick={handleOnClick} />
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <input
-          type="color"
-          value={pickedColor}
-          onChange={(event) => setPickedColor(event.target.value)}
-          style={{ marginRight: 8 }}
-        />
-        <Button
-          variant="outlined"
-          themeColor={pickedColor}
-          onClick={() => {
-            setIsChecked(false);
-          }}
-        >
-          重設
-        </Button>
-      </div>
-    </RadioWrapper>
-  );
-};
 
 const TemplateWithRadioGroup: Story<IRadioGroupProps> = (args) => {
   const [selectedValue, setSelectedValue] = useState<TValue>('others');
@@ -94,7 +69,7 @@ const TemplateWithRadioGroup: Story<IRadioGroupProps> = (args) => {
   return (
     <RadioGroup
       value={selectedValue}
-      handleChange={handleOnChange}
+      onChange={handleOnChange}
       columns={2}
       style={{
         maxWidth: 500,
@@ -108,21 +83,17 @@ const TemplateWithRadioGroup: Story<IRadioGroupProps> = (args) => {
   );
 };
 
-export const Default = TemplateWithState.bind({});
+export const Default = Template.bind({});
 Default.args = {
   children: 'Radio',
 };
 
-export const CustomizeColor = TemplateWithColorPicker.bind({});
-CustomizeColor.args = {
-  children: 'Radio',
-  isChecked: true,
-};
-
 export const DisabledRadio = Template.bind({});
+DisabledRadio.storyName = '禁用';
 DisabledRadio.args = {
   isDisabled: true,
   children: 'Radio',
 };
 
 export const WithRadioGroup = TemplateWithRadioGroup.bind({});
+WithRadioGroup.storyName = '群組';

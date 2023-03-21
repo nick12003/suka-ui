@@ -1,77 +1,61 @@
-import { useState } from 'react';
 import { Story } from '@storybook/react';
-import styled from 'styled-components';
 
-import Switch, { ISwitchProps } from '@/components/Switch';
+import Switch, { ISwitchProps, InternalSwitch } from '@/components/Switch';
 
-const SwitchGroup = styled.div`
-  display: flex;
-  align-items: center;
-  & > * {
-    margin-left: 20px;
-  }
-`;
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '數據輸入元件/Switch',
-  component: Switch,
-  argTypes: {
-    themeColor: { control: 'color' },
+  component: InternalSwitch,
+  argTypes: disableArgs(
+    {
+      isChecked: {
+        control: 'boolean',
+        defaultValue: false,
+      },
+      isDisabled: {
+        control: 'boolean',
+        defaultValue: false,
+      },
+      themeColor: {
+        defaultValue: 'primary',
+        control: { type: 'color', presetColors: ['primary', 'secondary', 'disable', 'error'] },
+        table: {
+          type: {
+            summary: 'TThemeColor',
+          },
+        },
+      },
+      size: {
+        control: 'radio',
+        options: ['small', 'default'],
+        defaultValue: 'default',
+      },
+    },
+    [
+      {
+        args: ['defaultChecked', 'onChange'],
+        type: 'control',
+      },
+    ]
+  ),
+};
+
+const Template: Story<ISwitchProps> = (args) => <Switch {...args} />;
+
+export const Default = Template.bind({});
+
+export const withCallBack = Template.bind({});
+withCallBack.storyName = '使用OnChange回調';
+withCallBack.args = {
+  onChange: (isChecked) => {
+    alert(`更改為 ${isChecked ? '開啟' : '關閉'} 狀態`);
   },
 };
 
-export const Default = () => {
-  const [isChecked, setIsChecked] = useState(false);
-  return <Switch isChecked={isChecked} onChange={() => setIsChecked((prev) => !prev)} />;
-};
-
-export const CustomColor = () => {
-  const [isChecked, setIsChecked] = useState(true);
-  return (
-    <Switch
-      isChecked={isChecked}
-      onChange={() => setIsChecked((prev) => !prev)}
-      themeColor="#ffc107"
-    />
-  );
-};
-
-export const DisabledSwitch = () => {
-  const [isChecked, setIsChecked] = useState(false);
-  return (
-    <div style={{ display: 'flex', gap: '24px' }}>
-      <Switch isChecked={false} isDisabled onChange={() => setIsChecked((prev) => !prev)} />
-      <Switch isChecked isDisabled onChange={() => setIsChecked((prev) => !prev)} />
-    </div>
-  );
-};
-
-export const SwitchWithSize = () => {
-  const [isChecked, setIsChecked] = useState(false);
-  return (
-    <SwitchGroup>
-      <Switch size="small" isChecked={isChecked} onChange={() => setIsChecked((prev) => !prev)} />
-      <Switch isChecked={isChecked} onChange={() => setIsChecked((prev) => !prev)} />
-    </SwitchGroup>
-  );
-};
-
-export const SwitchWithChildrenLabel: Story<ISwitchProps> = (args) => {
-  const [isChecked, setIsChecked] = useState(false);
-  return (
-    <SwitchGroup>
-      <Switch
-        checkedChildren="開啟"
-        unCheckedChildren="關閉"
-        isChecked={isChecked}
-        onChange={() => setIsChecked((prev) => !prev)}
-      />
-      <Switch
-        checkedChildren="開啟一個長度彈性的 Switch"
-        unCheckedChildren="關閉一個長度彈性的 Switch"
-        isChecked={isChecked}
-        onChange={() => setIsChecked((prev) => !prev)}
-      />
-    </SwitchGroup>
-  );
+export const WithLabel = Template.bind({});
+WithLabel.storyName = '包含內容文字';
+WithLabel.args = {
+  checkedChildren: '開啟',
+  unCheckedChildren: '關閉',
 };

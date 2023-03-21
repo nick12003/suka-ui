@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
 import styled, { css } from 'styled-components';
+
+import useValue from '@/hooks/useValue';
 
 const errorStyle = css`
   border: 1px solid ${(props) => props.theme.color.error};
@@ -21,12 +24,12 @@ const disabledStyle = css`
   }
 `;
 
-interface ICustom {
+interface IMain {
   $isError: boolean;
   $isDisabled: boolean;
 }
 
-const StyledTextField = styled.div<ICustom>`
+const StyledMain = styled.div<IMain>`
   display: inline-flex;
   align-items: center;
   border: 1px solid #ddd;
@@ -43,7 +46,7 @@ const StyledTextField = styled.div<ICustom>`
   ${(props) => (props.$isDisabled ? disabledStyle : null)}
 `;
 
-const Input = styled.input`
+const StyleInput = styled.input`
   outline: none;
   border: none;
   font-size: 14px;
@@ -53,17 +56,25 @@ const Input = styled.input`
 
 export interface ITextFieldProps {
   /**
-   * 客製化 class 樣式
+   * 文字內容。若設置，則由外部參數控制；若不設置，則由內部 state 控制
    */
-  className?: string;
+  value?: string;
+  /**
+   * 預設文字內容，如果設置了`value`則此參數則無效
+   */
+  defaultValue?: string;
+  /**
+   * 文字內容改變的 callback function
+   */
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   /**
    * 前綴元件
    */
-  prefix?: React.ReactElement;
+  prefix?: React.ReactNode;
   /**
    * 後綴元件
    */
-  suffix?: React.ReactElement;
+  suffix?: React.ReactNode;
   /**
    * 佔位文字
    */
@@ -81,17 +92,50 @@ export interface ITextFieldProps {
 /**
  * `TextField` 是一個允許用戶輸入和編輯文字的元件。
  */
-const InternalTextField: React.ForwardRefRenderFunction<HTMLDivElement, ITextFieldProps> = (
-  { className, prefix, suffix, isError = false, isDisabled = false, ...props },
-  ref
-) => (
-  <StyledTextField ref={ref} className={className} $isError={isError} $isDisabled={isDisabled}>
-    {prefix}
-    <Input type="text" className="text-field__input" disabled={isDisabled} {...props} />
-    {suffix}
-  </StyledTextField>
-);
+export const InternalTextField: React.ForwardRefRenderFunction<HTMLInputElement, ITextFieldProps> =
+  (
+    {
+      value: outerValue,
+      defaultValue,
+      onChange,
+      prefix,
+      suffix,
+      isError = false,
+      isDisabled = false,
+      ...props
+    },
+    ref
+  ) => {
+    const [value, setValue] = useValue(defaultValue, outerValue);
 
-const TextField = React.forwardRef(InternalTextField);
+    const handleOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setValue(e.target.value);
+      if (onChange) {
+        onChange(e);
+      }
+    };
+
+    return (
+      <StyledMain $isError={isError} $isDisabled={isDisabled}>
+        {prefix}
+        <StyleInput
+          ref={ref}
+          type="text"
+          value={value}
+          className={classNames('text-field__input')}
+          disabled={isDisabled}
+          onChange={handleOnchange}
+          {...props}
+        />
+        {suffix}
+      </StyledMain>
+    );
+  };
+
+const TextField =
+  React.forwardRef<
+    HTMLInputElement,
+    ITextFieldProps & Omit<extendElement<'div'>, 'prefix' | 'onChange'>
+  >(InternalTextField);
 
 export default TextField;
