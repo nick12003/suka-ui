@@ -1,23 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, Keyframes } from 'styled-components';
 
 import Portal from '../Portal';
 
-const hideMask = keyframes`
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-`;
+type TShowAnimation = (isOpen: boolean) => Keyframes;
 
-const showMask = keyframes`
+const showMask: TShowAnimation = (isOpen) => keyframes`
   0% {
-    opacity: 0;
+    opacity: ${isOpen ? 0 : 1};
   }
   100% {
-    opacity: 1;
+    opacity: ${isOpen ? 1 : 0};
   }
 `;
 
@@ -26,7 +19,7 @@ interface IMask {
   $animationDuration: number;
 }
 
-const Mask = styled.div<IMask>`
+const StyledMask = styled.div<IMask>`
   position: fixed;
   top: 0px;
   left: 0px;
@@ -34,11 +27,11 @@ const Mask = styled.div<IMask>`
   height: 100vh;
   background: #00000080;
   z-index: 2;
-  animation: ${(props) => (props.$isOpen ? showMask : hideMask)}
-    ${(props) => props.$animationDuration}ms ease-in-out forwards;
+  animation: ${(props) => showMask(props.$isOpen)} ${(props) => props.$animationDuration}ms
+    ease-in-out forwards;
 `;
 
-const ModalWrapper = styled.div`
+const StyledMain = styled.div`
   position: fixed;
   z-index: 3;
   top: 100px;
@@ -74,7 +67,7 @@ export interface IModalProps {
  * 例如 `對話框(Dialog)`、`彈出提示框(Popovers)`、`菜單(Menu)`、`抽屜(Drawer)`...等等元件。
  * 其使用時機是當系統流程當中需要用戶處理額外事務，但又不希望跳轉頁面以打斷目前工作流程時，提供一個彈出互動框解決方案。
  */
-const Modal = ({
+export const InternalModal: React.ForwardRefRenderFunction<HTMLDivElement, IModalProps> = ({
   isOpen = false,
   onClose,
   animationDuration = 200,
@@ -96,13 +89,15 @@ const Modal = ({
   return !removeDOM ? (
     <Portal>
       {hasMask && (
-        <Mask $isOpen={isOpen} $animationDuration={animationDuration} onClick={onClose} />
+        <StyledMask $isOpen={isOpen} $animationDuration={animationDuration} onClick={onClose} />
       )}
-      <ModalWrapper>{children}</ModalWrapper>
+      <StyledMain>{children}</StyledMain>
     </Portal>
   ) : (
     <></>
   );
 };
+
+const Modal = React.forwardRef<HTMLDivElement, IModalProps & extendElement<'div'>>(InternalModal);
 
 export default Modal;

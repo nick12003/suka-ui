@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Story } from '@storybook/react';
 
-import InfiniteScroll, { IInfiniteScrollProps } from '../components/InfiniteScroll';
-import ListItem from '../components/InfiniteScroll/ListItem';
+import InfiniteScroll, {
+  IInfiniteScrollProps,
+  InternalInfiniteScroll,
+} from '@/components/InfiniteScroll';
+import ListItem from '@/components/InfiniteScroll/ListItem';
 
 export default {
   title: '數據展示元件/InfiniteScroll',
-  component: InfiniteScroll,
+  component: InternalInfiniteScroll,
 };
 
 const defaultSideEffect = {

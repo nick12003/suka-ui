@@ -1,14 +1,46 @@
 import React, { useState } from 'react';
+import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import Pagination, { IPaginationProps } from '../components/Pagination';
+import Pagination, { IPaginationProps } from '@/components/Pagination';
 import SimplePagination, {
   IPaginationProps as ISimplePaginationProps,
-} from '../components/Pagination/simple';
+  InternalPagination,
+} from '@/components/Pagination/simple';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '導航元件/Pagination',
-  component: Pagination,
+  component: InternalPagination,
+  argTypes: disableArgs(
+    {
+      themeColor: {
+        defaultValue: 'primary',
+        control: { type: 'color', presetColors: ['primary', 'secondary', 'disable', 'error'] },
+        table: {
+          type: {
+            summary: 'TThemeColor',
+          },
+        },
+      },
+      page: {
+        defaultValue: 1,
+      },
+      pageSize: {
+        defaultValue: 20,
+      },
+      withEllipsis: {
+        defaultValue: false,
+      },
+    },
+    [
+      {
+        args: ['onChange', 'page', 'withEllipsis'],
+        type: 'control',
+      },
+    ]
+  ),
 };
 
 const WithDataWrapper = styled.div`
@@ -32,9 +64,9 @@ const fakeData = [...Array(102).keys()].map((key) => ({
   title: `Index: ${key}`,
 }));
 
-export const Default = () => {
+export const Default: Story<ISimplePaginationProps> = (args) => {
   const [page, setPage] = React.useState(1);
-  return <SimplePagination page={page} total={100} onChange={setPage} />;
+  return <SimplePagination {...args} page={page} total={100} onChange={setPage} />;
 };
 
 export const WithDataSource = () => {

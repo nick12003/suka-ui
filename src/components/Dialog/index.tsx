@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, Keyframes } from 'styled-components';
 
 import Modal, { IModalProps } from '../Modal';
 
@@ -7,7 +7,7 @@ import Button from '../Button';
 
 import { ReactComponent as CloseIcon } from '@/assets/SVG/close.svg';
 
-const HeaderWrapper = styled.div`
+const StyledHeader = styled.div`
   border-bottom: 1px solid #eeeeee;
   padding: 16px 20px;
   display: flex;
@@ -15,17 +15,17 @@ const HeaderWrapper = styled.div`
   align-items: center;
 `;
 
-const CloseButton = styled.div`
+const StyledCloseButton = styled.div`
   cursor: pointer;
   height: 24px;
   width: 24px;
 `;
 
-const FooterWrapper = styled.div`
+const StyledFooter = styled.div`
   padding: 12px 20px;
 `;
 
-const ButtonGroup = styled.div`
+const StyledButtonGroup = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-end;
@@ -34,39 +34,30 @@ const ButtonGroup = styled.div`
   }
 `;
 
-const hideDialog = keyframes`
+type TShowAnimation = (isOpen: boolean) => Keyframes;
+
+const showDialog: TShowAnimation = (isOpen) => keyframes`
   0% {
-    transform: scale(1);
-    opacity: 1;
+    transform: scale(${isOpen ? 0.9 : 1});
+    opacity: ${isOpen ? 0 : 1};
   }
   100% {
-    transform: scale(0.9);
-    opacity: 0;
+    transform: scale(${isOpen ? 1 : 0.9});
+    opacity: ${isOpen ? 1 : 0};
   }
 `;
 
-const showDialog = keyframes`
-  0% {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-`;
-
-interface IDialogWrapper {
+interface IMain {
   $isOpen: boolean;
 }
 
-const DialogWrapper = styled.div<IDialogWrapper>`
+const StyledMain = styled.div<IMain>`
   width: calc(100vw - 40px);
   max-width: 520px;
   border-radius: 4px;
   background: #fff;
   box-shadow: 0 3px 6px -4px #0000001f, 0 6px 16px #00000014, 0 9px 28px 8px #0000000d;
-  animation: ${(props) => (props.$isOpen ? showDialog : hideDialog)} 200ms ease-in-out forwards;
+  animation: ${(props) => showDialog(props.$isOpen)} 200ms ease-in-out forwards;
 `;
 
 const Content = styled.div`
@@ -85,41 +76,44 @@ export interface IDialogProps extends Pick<IModalProps, 'isOpen'> {
   /**
    * 觸發抽屜關閉
    */
-  onClose?: React.MouseEventHandler<HTMLDivElement> | React.MouseEventHandler<HTMLButtonElement>;
+  onClose?: Function;
   /**
    * 送出事件
    */
-  onSubmit?: React.MouseEventHandler<HTMLButtonElement>;
+  onSubmit?: Function;
 }
 
-const InternalDialog: React.ForwardRefRenderFunction<HTMLDivElement, IDialogProps> = (
+export const InternalDialog: React.ForwardRefRenderFunction<HTMLDivElement, IDialogProps> = (
   { isOpen = false, onClose, onSubmit, title, children, ...props },
   ref
 ) => (
   <Modal isOpen={isOpen} onClose={onClose as React.MouseEventHandler<HTMLDivElement>}>
-    <DialogWrapper ref={ref} $isOpen={isOpen} {...props}>
-      <HeaderWrapper>
+    <StyledMain ref={ref} $isOpen={isOpen} {...props}>
+      <StyledHeader>
         {title}
-        <CloseButton onClick={onClose as React.MouseEventHandler<HTMLDivElement>}>
+        <StyledCloseButton onClick={onClose as React.MouseEventHandler<HTMLDivElement>}>
           <CloseIcon />
-        </CloseButton>
-      </HeaderWrapper>
+        </StyledCloseButton>
+      </StyledHeader>
       <Content>{children}</Content>
-      <FooterWrapper>
-        <ButtonGroup>
+      <StyledFooter>
+        <StyledButtonGroup>
           <Button
             variant="outlined"
             onClick={onClose as React.MouseEventHandler<HTMLButtonElement>}
           >
             取消
           </Button>
-          <Button onClick={onSubmit}>確認</Button>
-        </ButtonGroup>
-      </FooterWrapper>
-    </DialogWrapper>
+          <Button onClick={onSubmit as React.MouseEventHandler<HTMLButtonElement>}>確認</Button>
+        </StyledButtonGroup>
+      </StyledFooter>
+    </StyledMain>
   </Modal>
 );
 
-const Dialog = React.forwardRef(InternalDialog);
+const Dialog =
+  React.forwardRef<HTMLDivElement, IDialogProps & Omit<extendElement<'div'>, 'title'>>(
+    InternalDialog
+  );
 
 export default Dialog;
