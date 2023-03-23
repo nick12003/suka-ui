@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState, CSSProperties } from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import React, { useRef, useEffect, useState } from 'react';
+import styled, { css, keyframes, Keyframes } from 'styled-components';
 import { render } from 'react-dom';
 
 import { ReactComponent as SuccessIcon } from '@/assets/SVG/done.svg';
@@ -7,20 +7,7 @@ import { ReactComponent as InfoIcon } from '@/assets/SVG/info.svg';
 import { ReactComponent as WarnIcon } from '@/assets/SVG/warn.svg';
 import { ReactComponent as ErrorIcon } from '@/assets/SVG/error.svg';
 
-interface IIconProps {
-  $color: string;
-}
-
-interface ITopStyleProps {
-  $isVisible: boolean;
-}
-
-type TType = 'success' | 'info' | 'warn' | 'error';
-export interface IToastProps {
-  type: TType;
-  content: React.ReactNode;
-  duration?: number;
-}
+type TType = keyof typeof iconMap;
 
 const rootId = 'toast-root';
 
@@ -31,30 +18,23 @@ const iconMap = {
   error: <ErrorIcon />,
 };
 
-const topIn = keyframes`
+const topIn: (isVisible: boolean) => Keyframes = (isVisible) => keyframes`
   0% {
-    transform: translateY(-50%);
-    opacity: 0;
+    transform: translateY(${isVisible ? '-50' : '100'}%);
+    opacity: ${isVisible ? 0 : 1};
   }
   100% {
-    transform: translateY(100%);
-    opacity: 1;
+    transform: translateY(${isVisible ? '100' : '-50'}%);
+    opacity: ${isVisible ? 1 : 0};
   }
 `;
 
-const topOut = keyframes`
-  0% {
-    transform: translateY(100%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-50%);
-    opacity: 0;
-  }
-`;
+interface ITopStyle {
+  $isVisible: boolean;
+}
 
-const topStyle = css<ITopStyleProps>`
-  animation: ${(props) => (props.$isVisible ? topIn : topOut)} 200ms ease-in-out forwards;
+const topStyle = css<ITopStyle>`
+  animation: ${(props) => topIn(props.$isVisible)} 200ms ease-in-out forwards;
 `;
 
 const ToastWrapper = styled.div`
@@ -74,10 +54,18 @@ const ToastWrapper = styled.div`
   ${topStyle}
 `;
 
-const Icon = styled.div<IIconProps>`
+interface IIcon {
+  $color: string;
+}
+
+const StyledIcon = styled.div<IIcon>`
   width: 24px;
   height: 24px;
   color: ${(prop) => prop.$color};
+  & svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const getColor = (type: TType) => {
@@ -96,12 +84,30 @@ const getColor = (type: TType) => {
   return '#1890ff';
 };
 
+export interface IToastProps {
+  /**
+   * 訊息的種類
+   */
+  type?: TType;
+  /**
+   * 訊息內容
+   */
+  content: React.ReactNode;
+  /**
+   * 訊息存在時間 (ms)
+   */
+  duration?: number;
+}
+
 /**
  * `Toast` 可以提供使用者操作的反饋訊息。包含一般資訊、操作成功、操作失敗、警告訊息等。
  * 預設為在頂部置中顯示並自動消失，是一種不打斷用戶操作的輕量級提示方式。
  */
-const Toast = ({ type, content, duration = 2000 }: IToastProps) => {
-  const toastRef = useRef<HTMLDivElement>(null);
+export const InternalToast: React.ForwardRefRenderFunction<HTMLDivElement, IToastProps> = (
+  { type = 'info', content, duration = 2000 },
+  ref
+) => {
+  const toastRef = (ref as any) || useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(true);
   const color = getColor(type);
 
@@ -118,11 +124,15 @@ const Toast = ({ type, content, duration = 2000 }: IToastProps) => {
 
   return (
     <ToastWrapper ref={toastRef} $isVisible={isVisible}>
-      <Icon $color={color}>{iconMap[type]}</Icon>
+      <StyledIcon $color={color}>{iconMap[type]}</StyledIcon>
       {content}
     </ToastWrapper>
   );
 };
+
+interface IToastWithDiv extends IToastProps, extendElement<'div'> {}
+
+const Toast = React.forwardRef<HTMLDivElement, IToastWithDiv>(InternalToast);
 
 const getContainer = () => {
   let toastRoot: HTMLElement;
@@ -164,16 +174,16 @@ const getContainer = () => {
 };
 
 export const message = {
-  success: (props: IToastProps) => {
+  success: (props: IToastWithDiv) => {
     render(<Toast {...props} type="success" />, getContainer());
   },
-  info: (props: IToastProps) => {
+  info: (props: IToastWithDiv) => {
     render(<Toast {...props} type="info" />, getContainer());
   },
-  warn: (props: IToastProps) => {
+  warn: (props: IToastWithDiv) => {
     render(<Toast {...props} type="warn" />, getContainer());
   },
-  error: (props: IToastProps) => {
+  error: (props: IToastWithDiv) => {
     render(<Toast {...props} type="error" />, getContainer());
   },
 };

@@ -46,7 +46,6 @@ const InternalTabGroup: React.ForwardRefRenderFunction<HTMLTableElement, ITabGro
       left: number;
     }[]
   >([]);
-
   const handleClickTab = ({ tabValue, tabIndex }: { tabValue?: string; tabIndex: number }) => {
     handleChange(tabValue);
     setActiveIndex(tabIndex);

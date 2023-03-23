@@ -1,13 +1,20 @@
-import React from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import Table, { ITableProps } from '../components/Table';
-import Button from '../components/Button';
+import Table, { ITableProps } from '@/components/Table';
+import Button from '@/components/Button';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '數據展示元件/Table',
   component: Table,
+  argTypes: disableArgs({}, [
+    {
+      args: ['columns', 'dataSource'],
+      type: 'control',
+    },
+  ]),
 };
 
 const MyTableStyle = styled(Table)`

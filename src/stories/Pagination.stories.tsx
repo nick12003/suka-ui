@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import Pagination, { IPaginationProps } from '@/components/Pagination';
+import Pagination from '@/components/Pagination';
 import SimplePagination, {
   IPaginationProps as ISimplePaginationProps,
   InternalPagination,

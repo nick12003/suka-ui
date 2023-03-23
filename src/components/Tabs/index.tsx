@@ -14,7 +14,7 @@ export interface ITabGroupProps {
   /**
    * 主題配色，primary、secondary 或是自己傳入色票
    */
-  themeColor?: string;
+  themeColor?: TThemeColor;
   /**
    * Tabs 選項內容
    */
@@ -34,16 +34,15 @@ export interface ITabGroupProps {
  * 此元件由兩個部分構成，一個是讓使用者點擊的導覽頁籤 Tab，一個是對應的內容 TabPanel。
  * 通常使用於同一層級的內容之間互相切換、導航。
  */
-const Tabs = ({
+export const InternalTabs: React.ForwardRefRenderFunction<HTMLInputElement, ITabGroupProps> = ({
   themeColor = 'primary',
   value = '',
   options = [],
   onChange,
   ...props
-}: ITabGroupProps) => {
+}) => {
   const { makeColor } = useColor();
   const color = makeColor({ themeColor });
-
   return (
     <TabGroup handleChange={onChange} value={value} color={color} {...props}>
       {options.map((option) => (
@@ -52,5 +51,10 @@ const Tabs = ({
     </TabGroup>
   );
 };
+
+const Tabs =
+  React.forwardRef<HTMLInputElement, ITabGroupProps & Omit<extendElement<'div'>, 'onChange'>>(
+    InternalTabs
+  );
 
 export default Tabs;

@@ -1,12 +1,20 @@
 import styled from 'styled-components';
 import { Story } from '@storybook/react';
 
-import Toast, { message, IToastProps } from '../components/Toast';
-import Button from '../components/Button';
+import { message, IToastProps, InternalToast } from '@/components/Toast';
+import Button from '@/components/Button';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '反饋元件/Toast',
-  component: Toast,
+  component: InternalToast,
+  argTypes: disableArgs({}, [
+    {
+      args: ['type', 'content', 'duration'],
+      type: 'control',
+    },
+  ]),
 };
 
 const ButtonGroup = styled.div`
@@ -16,7 +24,7 @@ const ButtonGroup = styled.div`
   }
 `;
 
-const Template: Story<IToastProps> = (args) => (
+const Template: Story<IToastProps> = () => (
   <ButtonGroup>
     <Button
       variant="outlined"

@@ -2,12 +2,32 @@ import { useState, useEffect } from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import ProgressBar, { IProgressBarProps } from '../components/ProgressBar';
-import Button from '../components/Button';
+import ProgressBar, { IProgressBarProps, InternalProgressBar } from '@/components/ProgressBar';
+import Button from '@/components/Button';
 
 export default {
   title: '反饋元件/ProgressBar',
-  component: ProgressBar,
+  component: InternalProgressBar,
+  argTypes: {
+    showInfo: {
+      defaultValue: true,
+    },
+    value: {
+      defaultValue: 0,
+    },
+    themeColor: {
+      defaultValue: 'primary',
+      control: { type: 'color', presetColors: ['primary', 'secondary', 'disable', 'error'] },
+      table: {
+        type: {
+          summary: 'TThemeColor',
+        },
+      },
+    },
+    isStatusActive: {
+      defaultValue: true,
+    },
+  },
 };
 
 const Container = styled.div`
@@ -43,30 +63,6 @@ const TemplateGradient: Story<IProgressBarProps> = (args) => (
     {args.showInfo && <GradientProgressBar {...args} value={120} />}
   </Container>
 );
-
-const TemplateCustomColor: Story<IProgressBarProps> = (args) => {
-  const defaultColor = '#FE6B8B';
-  const [pickedColor, setPickedColor] = useState(defaultColor);
-
-  return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
-        <input
-          type="color"
-          value={pickedColor}
-          onChange={(event) => setPickedColor(event.target.value)}
-        />
-      </div>
-      <Container>
-        <ProgressBar {...args} themeColor={pickedColor} />
-        <ProgressBar {...args} value={50} themeColor={pickedColor} />
-        <ProgressBar {...args} value={75} themeColor={pickedColor} />
-        <ProgressBar {...args} value={100} themeColor={pickedColor} />
-        {args.showInfo && <ProgressBar {...args} value={120} themeColor={pickedColor} />}
-      </Container>
-    </div>
-  );
-};
 
 const TemplateTransition: Story<IProgressBarProps> = (args) => {
   const [playKey, setPlayKey] = useState(true);
@@ -114,12 +110,6 @@ Default.args = {
 export const WithoutInfo = Template.bind({});
 WithoutInfo.args = {
   showInfo: false,
-};
-
-export const CustomColor = TemplateCustomColor.bind({});
-CustomColor.args = {
-  showInfo: true,
-  themeColor: '',
 };
 
 export const GradientTrack = TemplateGradient.bind({});

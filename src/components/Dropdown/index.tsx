@@ -36,99 +36,77 @@ interface IPlacement {
   $isOpen: boolean;
 }
 
-const topStyle = css<IPlacement>`
-  transform: translate(
-    calc(${(props) => props.$childrenSize.width / 2}px - 50%),
-    calc(-100% - ${(props) => props.$gap}px)
-  );
-`;
-
-const topLeftStyle = css<IPlacement>`
-  transform: translate(0px, calc(-100% - ${(props) => props.$gap}px));
-`;
-
-const topRightStyle = css<IPlacement>`
-  transform: translate(
-    calc(-100% + ${(props) => props.$childrenSize.width}px),
-    calc(-100% - ${(props) => props.$gap}px)
-  );
-`;
-
-const bottomStyle = css<IPlacement>`
-  transform: translate(
-    calc(${(props) => props.$childrenSize.width / 2}px - 50%),
-    ${(props) => props.$childrenSize.height + props.$gap}px
-  );
-`;
-
-const bottomLeftStyle = css<IPlacement>`
-  transform: translate(0px, ${(props) => props.$childrenSize.height + props.$gap}px);
-`;
-
-const bottomRightStyle = css<IPlacement>`
-  transform: translate(
-    calc(-100% + ${(props) => props.$childrenSize.width}px),
-    ${(props) => props.$childrenSize.height + props.$gap}px
-  );
-`;
-
-const rightTopStyle = css<IPlacement>`
-  transform: translate(${(props) => props.$childrenSize.width + props.$gap}px, 0px);
-`;
-
-const rightBottomStyle = css<IPlacement>`
-  transform: translate(
-    ${(props) => props.$childrenSize.width + props.$gap}px,
-    calc(-100% + ${(props) => props.$childrenSize.height}px)
-  );
-`;
-
-const leftBottomStyle = css<IPlacement>`
-  transform: translate(
-    calc(-100% - ${(props) => props.$gap}px),
-    calc(-100% + ${(props) => props.$childrenSize.height}px)
-  );
-`;
-
-const leftTopStyle = css<IPlacement>`
-  transform: translate(calc(-100% - ${(props) => props.$gap}px), 0px);
-`;
-
-const leftStyle = css<IPlacement>`
-  transform: translate(
-    calc(-100% - ${(props) => props.$gap}px),
-    calc(-50% + ${(props) => props.$childrenSize.height / 2}px)
-  );
-`;
-
-const rightStyle = css<IPlacement>`
-  transform: translate(
-    ${(props) => props.$childrenSize.width + props.$gap}px,
-    calc(-50% + ${(props) => props.$childrenSize.height / 2}px)
-  );
-`;
-
 const placementStyleMap = {
-  top: topStyle,
-  'top-left': topLeftStyle,
-  'top-right': topRightStyle,
-  'bottom-left': bottomLeftStyle,
-  'bottom-right': bottomRightStyle,
-  bottom: bottomStyle,
-  'right-top': rightTopStyle,
-  'left-top': leftTopStyle,
-  'right-bottom': rightBottomStyle,
-  'left-bottom': leftBottomStyle,
-  left: leftStyle,
-  right: rightStyle,
+  top: css<IPlacement>`
+    transform: translate(
+      calc(${(props) => props.$childrenSize.width / 2}px - 50%),
+      calc(-100% - ${(props) => props.$gap}px)
+    );
+  `,
+  'top-left': css<IPlacement>`
+    transform: translate(0px, calc(-100% - ${(props) => props.$gap}px));
+  `,
+  'top-right': css<IPlacement>`
+    transform: translate(
+      calc(-100% + ${(props) => props.$childrenSize.width}px),
+      calc(-100% - ${(props) => props.$gap}px)
+    );
+  `,
+  'bottom-left': css<IPlacement>`
+    transform: translate(0px, ${(props) => props.$childrenSize.height + props.$gap}px);
+  `,
+  'bottom-right': css<IPlacement>`
+    transform: translate(
+      calc(-100% + ${(props) => props.$childrenSize.width}px),
+      ${(props) => props.$childrenSize.height + props.$gap}px
+    );
+  `,
+  bottom: css<IPlacement>`
+    transform: translate(
+      calc(${(props) => props.$childrenSize.width / 2}px - 50%),
+      ${(props) => props.$childrenSize.height + props.$gap}px
+    );
+  `,
+  'right-top': css<IPlacement>`
+    transform: translate(${(props) => props.$childrenSize.width + props.$gap}px, 0px);
+  `,
+  'left-top': css<IPlacement>`
+    transform: translate(calc(-100% - ${(props) => props.$gap}px), 0px);
+  `,
+  'right-bottom': css<IPlacement>`
+    transform: translate(
+      ${(props) => props.$childrenSize.width + props.$gap}px,
+      calc(-100% + ${(props) => props.$childrenSize.height}px)
+    );
+  `,
+  'left-bottom': css<IPlacement>`
+    transform: translate(
+      calc(-100% - ${(props) => props.$gap}px),
+      calc(-100% + ${(props) => props.$childrenSize.height}px)
+    );
+  `,
+  left: css<IPlacement>`
+    transform: translate(
+      calc(-100% - ${(props) => props.$gap}px),
+      calc(-50% + ${(props) => props.$childrenSize.height / 2}px)
+    );
+  `,
+  right: css<IPlacement>`
+    transform: translate(
+      ${(props) => props.$childrenSize.width + props.$gap}px,
+      calc(-50% + ${(props) => props.$childrenSize.height / 2}px)
+    );
+  `,
 };
 
 const fadeInOrOut: (isOpen: boolean) => Keyframes = (isOpen) => keyframes`
   from {
     opacity: ${isOpen ? 0 : 1};
+    height: ${isOpen ? '0px' : 'max-content'};
   }
   to {
     opacity: ${isOpen ? 1 : 0};
+    height: ${isOpen ? 'max-content' : '0px'};
   }
 `;
 
@@ -151,6 +129,8 @@ const StyledMain = styled.div<IMain>`
   box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%),
     0 9px 28px 8px rgb(0 0 0 / 5%);
   opacity: 0;
+  height: 0px;
+  overflow: hidden;
   ${(props) => (props.$isMount ? fadeAnimation : undefined)}
   ${(props) => placementStyleMap[props.$placement]}
 `;

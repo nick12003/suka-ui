@@ -5,11 +5,50 @@ import styled from 'styled-components';
 import { ReactComponent as FavoriteBorderIcon } from '@/assets/SVG/favoriteBorder.svg';
 import { ReactComponent as SentimentVerySatisfiedOutlinedIcon } from '@/assets/SVG/sentimentVerySatisfied.svg';
 
-import Rate, { IRateProps } from '../components/Rate';
+import Rate, { IRateProps, InternalRate } from '@/components/Rate';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '數據輸入元件/Rate',
-  component: Rate,
+  component: InternalRate,
+  argTypes: disableArgs(
+    {
+      count: {
+        defaultValue: 5,
+      },
+      defaultValue: {
+        defaultValue: 0,
+      },
+      size: {
+        defaultValue: 'medium',
+      },
+      isDisabled: {
+        defaultValue: false,
+      },
+      allowHalf: {
+        defaultValue: false,
+      },
+      themeColor: {
+        defaultValue: '#FBDB14',
+        control: {
+          type: 'color',
+          presetColors: ['#FBDB14', 'primary', 'secondary', 'disable', 'error'],
+        },
+        table: {
+          type: {
+            summary: 'TThemeColor',
+          },
+        },
+      },
+    },
+    [
+      {
+        args: ['character', 'onChange'],
+        type: 'control',
+      },
+    ]
+  ),
 };
 
 const Template: Story<IRateProps> = (args) => <Rate {...args} />;
@@ -58,7 +97,6 @@ const TemplateWithCount: Story<IRateProps> = (args) => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
 
 export const WithDefaultValue = Template.bind({});
 WithDefaultValue.args = {
@@ -66,7 +104,6 @@ WithDefaultValue.args = {
 };
 
 export const WithCount = TemplateWithCount.bind({});
-WithCount.args = {};
 
 export const DisableInteraction = Template.bind({});
 DisableInteraction.args = {
@@ -88,7 +125,7 @@ AllowHalf.args = {
 export const WithSize = Template.bind({});
 WithSize.args = {
   defaultValue: 3,
-  size: 48,
+  size: 'large',
 };
 
 export const WithColor = Template.bind({});

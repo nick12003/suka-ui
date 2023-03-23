@@ -5,50 +5,13 @@ import CircularProgress from '../CircularProgress';
 import Arrow from '../Arrow';
 import Dropdown from '../Dropdown';
 
-interface IStyledCircularProgress {
+import useValue from '@/hooks/useValue';
+
+interface ICircularProgress {
   $color: string;
 }
 
-interface ISelectBox {
-  $isDisabled: boolean;
-}
-
-interface IArrowDown {
-  $isOpen: boolean;
-}
-
-interface IMenuItem {
-  $isSelected: boolean;
-}
-
-export interface ISelectProps {
-  /**
-   * 選項內容
-   */
-  options: Array<any>;
-  /**
-   * 用來指定當前被選中的項目
-   */
-  value: string;
-  /**
-   * 未選擇任何選項時顯示的 placeholder
-   */
-  placeholder: string;
-  /**
-   * 是否禁用下拉選單
-   */
-  isDisabled: boolean;
-  /**
-   * 資料是否正在載入中
-   */
-  isLoading: boolean;
-  /**
-   * 當選項被選中時會被調用
-   */
-  onSelect: Function;
-}
-
-const StyledCircularProgress = styled(CircularProgress)<IStyledCircularProgress>`
+const StyledCircularProgress = styled(CircularProgress)<ICircularProgress>`
   margin-right: 8px;
   color: ${(props) => props.$color};
 `;
@@ -65,7 +28,11 @@ const selectBoxDisable = css`
   color: #00000040;
 `;
 
-const SelectBox = styled.div<ISelectBox>`
+interface IMain {
+  $isDisabled: boolean;
+}
+
+const StyledMain = styled.div<IMain>`
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
@@ -84,20 +51,28 @@ const SelectBox = styled.div<ISelectBox>`
   ${(props) => (props.$isDisabled ? selectBoxDisable : selectBoxEnable)}
 `;
 
-const ArrowDown = styled.div<IArrowDown>`
+interface IArrow {
+  $isOpen: boolean;
+}
+
+const StyledArrow = styled.div<IArrow>`
   height: 24px;
   width: 24px;
   transform: rotate(${(props) => (props.$isOpen ? 180 : 0)}deg);
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
-const Menu = styled.div`
+const StyledMenu = styled.div`
   min-width: 180px;
   display: inline-flex;
   flex-direction: column;
 `;
 
-const MenuItem = styled.div<IMenuItem>`
+interface IMenuItem {
+  $isSelected: boolean;
+}
+
+const StyledMenuItem = styled.div<IMenuItem>`
   display: inline-flex;
   align-items: center;
   height: 38px;
@@ -111,57 +86,110 @@ const MenuItem = styled.div<IMenuItem>`
   }
 `;
 
-const InternalSelect: React.ForwardRefRenderFunction<HTMLDivElement, ISelectProps> = (
-  { options, value, onSelect, placeholder, isDisabled, isLoading, ...props },
+export interface ISelectProps {
+  /**
+   * 選項內容
+   */
+  options?: Array<{
+    label: string;
+    value: string;
+  }>;
+  /**
+   * 當前被選中的項目。若設置，則由外部參數控制；若不設置，則由內部 state 控制
+   */
+  value?: string;
+  /**
+   * 預設選中的項目，如果設置了`value`則此參數則無效
+   */
+  defaultValue?: string;
+  /**
+   * 未選擇任何選項時顯示的 placeholder
+   */
+  placeholder?: string;
+  /**
+   * 是否禁用下拉選單
+   */
+  isDisabled?: boolean;
+  /**
+   * 資料是否正在載入中
+   */
+  isLoading?: boolean;
+  /**
+   * 當選項被選中時會被調用
+   */
+  onSelect?: (value: string) => void;
+}
+
+/**
+ * `Select` 是一個下拉選擇器。觸發時能夠彈出一個菜單讓用戶選擇操作。
+ */
+export const InternalSelect: React.ForwardRefRenderFunction<HTMLDivElement, ISelectProps> = (
+  {
+    options = [],
+    value: outerValue,
+    defaultValue,
+    onSelect,
+    placeholder,
+    isDisabled = false,
+    isLoading = false,
+    ...props
+  },
   ref
 ) => {
+  const [value, setValue] = useValue(defaultValue, outerValue);
+
   const [isOpen, setIsOpen] = useState(false);
 
-  const foundOption = options.find((option) => option.value === value) || {};
+  const handleOnSelect = (selectValue: string) => {
+    setValue(selectValue);
+    if (onSelect) {
+      onSelect(selectValue);
+    }
+  };
 
   return (
     <Dropdown
       ref={ref}
+      {...props}
       isOpen={isOpen}
       onClick={() => (isDisabled || isLoading ? null : setIsOpen(true))}
       onClose={() => setIsOpen(false)}
       placement="bottom-left"
       overlay={
-        <Menu>
+        <StyledMenu>
           {options.map((option) => (
-            <MenuItem
+            <StyledMenuItem
               key={option.value}
               role="presentation"
               $isSelected={option.value === value}
               onClick={() => {
-                onSelect(option.value);
+                handleOnSelect(option.value);
                 setIsOpen(false);
               }}
             >
               {option.label}
-            </MenuItem>
+            </StyledMenuItem>
           ))}
-        </Menu>
+        </StyledMenu>
       }
-      {...props}
     >
-      <SelectBox $isDisabled={isDisabled || isLoading}>
-        <span>{foundOption.label || placeholder}</span>
+      <StyledMain $isDisabled={isDisabled || isLoading}>
+        <span>{options.find((option) => option.value === value)?.label ?? placeholder}</span>
         {isLoading ? (
           <StyledCircularProgress $color="#00000040" />
         ) : (
-          <ArrowDown $isOpen={isOpen}>
+          <StyledArrow $isOpen={isOpen}>
             <Arrow direction="down" />
-          </ArrowDown>
+          </StyledArrow>
         )}
-      </SelectBox>
+      </StyledMain>
     </Dropdown>
   );
 };
 
-/**
- * `Select` 是一個下拉選擇器。觸發時能夠彈出一個菜單讓用戶選擇操作。
- */
-const Select = React.forwardRef(InternalSelect);
+const Select =
+  React.forwardRef<HTMLDivElement, ISelectProps & Omit<extendElement<'div'>, 'onSelect'>>(
+    InternalSelect
+  );
 
 export default Select;

@@ -1,34 +1,6 @@
 /* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import styled, { css } from 'styled-components';
-import PropTypes from 'prop-types';
-
-interface ITh extends React.ComponentPropsWithoutRef<'th'> {
-  $width?: number;
-  $fixed?: boolean;
-}
-
-interface ITd {
-  $fixed?: boolean;
-}
-
-export interface ITableProps extends React.ComponentPropsWithoutRef<'table'> {
-  /**
-   * 描述表格欄位的配置
-   */
-  columns: Array<{
-    key: string;
-    width?: number;
-    fixed?: boolean;
-    title: React.ReactNode;
-    dataIndex: string;
-    render?: Function;
-  }>;
-  /**
-   * 指定表格的數據內容
-   */
-  dataSource: Array<any>;
-}
 
 const stickyLeftStyle = css`
   position: sticky;
@@ -54,17 +26,54 @@ const StyledTable = styled.table`
   }
 `;
 
+interface ITh extends React.ComponentPropsWithoutRef<'th'> {
+  $width?: number;
+  $fixed?: boolean;
+}
+
 const Th = styled.th<ITh>`
   width: ${(props) => props.$width}px;
   ${(props) => props.$fixed && stickyLeftStyle};
 `;
+
+interface ITd {
+  $fixed?: boolean;
+}
 
 const Td = styled.td<ITd>`
   background: #fff;
   ${(props) => props.$fixed && stickyLeftStyle};
 `;
 
-const InternalTable: React.ForwardRefRenderFunction<HTMLTableElement, ITableProps> = (
+type IColumns = {
+  key?: string;
+  width?: number;
+  fixed?: boolean;
+  title: React.ReactNode;
+  dataIndex: string;
+  render?: Function;
+};
+
+type IDataSource = {
+  key: string;
+  [x: string]: any;
+};
+
+export interface ITableProps {
+  /**
+   * 描述表格欄位的配置
+   */
+  columns: Array<IColumns>;
+  /**
+   * 指定表格的數據內容
+   */
+  dataSource: Array<IDataSource>;
+}
+
+/**
+ * `Table` 顧名思義就是一個表格元件，用來整齊的顯示行列數據。
+ */
+export const InternalTable: React.ForwardRefRenderFunction<HTMLTableElement, ITableProps> = (
   { columns, dataSource, ...props },
   ref
 ) => (
@@ -73,7 +82,7 @@ const InternalTable: React.ForwardRefRenderFunction<HTMLTableElement, ITableProp
       <thead>
         <tr>
           {columns.map((column) => (
-            <Th key={column.key} $width={column.width} $fixed={column.fixed}>
+            <Th key={column.key ?? column.dataIndex} $width={column.width} $fixed={column.fixed}>
               {column.title}
             </Th>
           ))}
@@ -100,9 +109,7 @@ const InternalTable: React.ForwardRefRenderFunction<HTMLTableElement, ITableProp
   </div>
 );
 
-/**
- * `Table` 顧名思義就是一個表格元件，用來整齊的顯示行列數據。
- */
-const Table = React.forwardRef(InternalTable);
+const Table =
+  React.forwardRef<HTMLTableElement, ITableProps & extendElement<'table'>>(InternalTable);
 
 export default Table;

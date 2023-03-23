@@ -6,11 +6,32 @@ import { ReactComponent as PhoneIcon } from '@/assets/SVG/phone.svg';
 import { ReactComponent as FavoriteIcon } from '@/assets/SVG/favorite.svg';
 import { ReactComponent as PersonPinIcon } from '@/assets/SVG/personPin.svg';
 
-import Tabs, { ITabGroupProps } from '../components/Tabs';
+import Tabs, { ITabGroupProps, InternalTabs } from '@/components/Tabs';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '導航元件 /Tabs',
-  component: Tabs,
+  component: InternalTabs,
+  argTypes: disableArgs(
+    {
+      themeColor: {
+        defaultValue: 'primary',
+        control: { type: 'color', presetColors: ['primary', 'secondary', 'disable', 'error'] },
+        table: {
+          type: {
+            summary: 'TThemeColor',
+          },
+        },
+      },
+    },
+    [
+      {
+        args: ['options', 'value', 'onChange'],
+        type: 'control',
+      },
+    ]
+  ),
 };
 
 const StyledTabs = styled(Tabs)`
@@ -72,12 +93,13 @@ const iconTabOptions = [
   },
 ];
 
-const Template = () => {
+const Template: Story<ITabGroupProps> = (args) => {
   const [selectedValue, setSelectedValue] = useState<string | undefined>(tabOptions[0].value);
 
   return (
     <>
       <StyledTabs
+        {...args}
         value={selectedValue}
         options={tabOptions}
         onChange={(value) => setSelectedValue(value)}
@@ -118,43 +140,8 @@ const TemplateIconTabs = () => {
   );
 };
 
-const TemplateColor = () => {
-  const defaultColor = '#FE6B8B';
-  const [pickedColor, setPickedColor] = useState(defaultColor);
-  const [selectedValue, setSelectedValue] = useState<string | undefined>(tabOptions[0].value);
-
-  return (
-    <>
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginBottom: 20,
-        }}
-      >
-        <input
-          type="color"
-          value={pickedColor}
-          onChange={(event) => setPickedColor(event.target.value)}
-          style={{ marginRight: 8 }}
-        />
-      </div>
-      <StyledTabs
-        options={tabOptions}
-        value={selectedValue}
-        themeColor={pickedColor}
-        onChange={(value) => setSelectedValue(value)}
-      />
-      <TabPanel>{`TabPanel of #${selectedValue}`}</TabPanel>
-    </>
-  );
-};
-
 export const Default = Template.bind({});
 
 export const Centered = TemplateCentered.bind({});
 
 export const IconTab = TemplateIconTabs.bind({});
-
-export const ColoredTab = TemplateColor.bind({});

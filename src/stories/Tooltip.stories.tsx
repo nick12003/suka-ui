@@ -1,15 +1,48 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
+import Tooltip, { ITooltipProps, InternalTooltip } from '@/components/Tooltip';
+import Button from '@/components/Button';
+
 import { ReactComponent as InfoOutlinedIcon } from '@/assets/SVG/info.svg';
-import Tooltip, { ITooltipProps } from '../components/Tooltip';
-import Button from '../components/Button';
-import Switch from '../components/Switch';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '數據展示元件/Tooltip',
-  component: Tooltip,
+  component: InternalTooltip,
+  argTypes: disableArgs(
+    {
+      showArrow: {
+        defaultValue: true,
+      },
+      placement: {
+        defaultValue: 'top',
+      },
+      themeColor: {
+        defaultValue: '#101010',
+        control: {
+          type: 'color',
+          presetColors: ['#101010', 'primary', 'secondary', 'disable', 'error'],
+        },
+        table: {
+          type: {
+            summary: 'TThemeColor',
+          },
+        },
+      },
+      content: {
+        type: { name: 'string' },
+      },
+    },
+    [
+      {
+        args: ['children'],
+        type: 'control',
+      },
+    ]
+  ),
 };
 
 const Row = styled.div`
@@ -31,41 +64,27 @@ const PlacementWrapper = styled.div`
   }
 `;
 
-const TemplateWithColorPicker: Story<ITooltipProps> = (args) => {
-  const defaultColor = '#FE6B8B';
-  const [pickedColor, setPickedColor] = useState(defaultColor);
-
-  return (
-    <SpaceBetween style={{ height: 160 }}>
-      <Tooltip {...args} themeColor={pickedColor}>
-        <Button variant="outlined">Custom Color</Button>
+const Template: Story<ITooltipProps> = (args) => (
+  <div style={{ display: 'flex', alignItems: 'center', height: 160 }}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      英雄聯盟2022世界大賽
+      <Tooltip {...args} content="歡迎來挑戰">
+        <span style={{ display: 'flex', alignItems: 'center', marginLeft: 4 }}>
+          <InfoOutlinedIcon style={{ cursor: 'pointer' }} />
+        </span>
       </Tooltip>
-      <input
-        type="color"
-        value={pickedColor}
-        onChange={(event) => setPickedColor(event.target.value)}
-        style={{ marginRight: 8 }}
-      />
-    </SpaceBetween>
-  );
-};
+    </div>
+  </div>
+);
 
-const TemplateShowArrow: Story<ITooltipProps> = (args) => {
-  const [showArrow, setShowArrow] = useState(true);
-
-  return (
-    <SpaceBetween style={{ height: 160 }}>
-      <Tooltip {...args} showArrow={showArrow}>
-        <Button variant="outlined">Show Arrow</Button>
-      </Tooltip>
-      <Switch
-        isChecked={showArrow}
-        checkedChildren="有箭頭"
-        unCheckedChildren="沒箭頭"
-        onChange={() => setShowArrow((prev) => !prev)}
-      />
-    </SpaceBetween>
-  );
+const defaultArgs = {
+  children: 'Tooltip',
+  content: (
+    <div>
+      <div>Tooltip</div>
+      <div>Awesome!</div>
+    </div>
+  ),
 };
 
 const TemplatePlacement: Story<ITooltipProps> = (args) => (
@@ -119,43 +138,9 @@ const TemplatePlacement: Story<ITooltipProps> = (args) => (
   </PlacementWrapper>
 );
 
-const Template: Story<ITooltipProps> = (args) => (
-  <div style={{ display: 'flex', alignItems: 'center', height: 160 }}>
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      英雄聯盟2022世界大賽
-      <Tooltip {...args} content="歡迎來挑戰">
-        <span style={{ display: 'flex', alignItems: 'center', marginLeft: 4 }}>
-          <InfoOutlinedIcon style={{ cursor: 'pointer' }} />
-        </span>
-      </Tooltip>
-    </div>
-  </div>
-);
-
-const defaultArgs = {
-  children: 'Tooltip',
-  content: (
-    <div>
-      <div>Tooltip</div>
-      <div>Awesome!</div>
-    </div>
-  ),
-};
-
 export const Default = Template.bind({});
-Default.args = {};
 
 export const Placement = TemplatePlacement.bind({});
 Placement.args = {
-  ...defaultArgs,
-};
-
-export const CustomColor = TemplateWithColorPicker.bind({});
-CustomColor.args = {
-  ...defaultArgs,
-};
-
-export const ShowArrow = TemplateShowArrow.bind({});
-ShowArrow.args = {
   ...defaultArgs,
 };

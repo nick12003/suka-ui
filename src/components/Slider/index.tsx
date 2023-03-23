@@ -3,37 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { useColor } from '@/theme/useColor';
 
-interface IStyledSlider {
-  $color: string;
-  $widthRatio: number;
-}
-
-export interface ISliderProps {
-  /**
-   * 預設值
-   */
-  defaultValue: number;
-  /**
-   * 最小值
-   */
-  min: number;
-  /**
-   * 最大值
-   */
-  max: number;
-  /**
-   * 步長，取值必須大於 0，並且可被 (max - min) 整除
-   */
-  step: number;
-  /**
-   * 主題配色，primary、secondary 或是自己傳入色票
-   */
-  themeColor: string;
-  /**
-   * 數值改變的 callback function
-   */
-  onChange: Function;
-}
+import useValue from '@/hooks/useValue';
 
 const SIZE_THUMB = 20;
 
@@ -44,7 +14,12 @@ const railStyle = css`
   border-radius: 5px;
 `;
 
-const StyledSlider = styled.input<IStyledSlider>`
+interface IMain {
+  $color: string;
+  $widthRatio: number;
+}
+
+const StyledMain = styled.input<IMain>`
   &[type='range'] {
     -webkit-appearance: none;
     outline: none;
@@ -88,38 +63,84 @@ const StyledSlider = styled.input<IStyledSlider>`
   }
 `;
 
-const InternalSlider: React.ForwardRefRenderFunction<HTMLInputElement, ISliderProps> = (
-  { min = 0, max = 100, step = 1, defaultValue = 0, onChange, themeColor = 'primary', ...props },
+export interface ISliderProps {
+  /**
+   * value。若設置，則由外部參數控制；若不設置，則由內部 state 控制
+   */
+  value: number;
+  /**
+   * 預設值。如果設置了`value`則此參數則無效
+   */
+  defaultValue: number;
+  /**
+   * 最小值
+   */
+  min: number;
+  /**
+   * 最大值
+   */
+  max: number;
+  /**
+   * 步長，取值必須大於 0，並且可被 (max - min) 整除
+   */
+  step: number;
+  /**
+   * 主題配色，primary、secondary 或是自己傳入色票
+   */
+  themeColor: string;
+  /**
+   * 數值改變的 callback function
+   */
+  onChange: (value: number, e?: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+/**
+ * `Slider` 是一個滑動型輸入器，允許使用者在數值區間內進行選擇，選擇的值可為連續值或是離散值。
+ */
+export const InternalSlider: React.ForwardRefRenderFunction<HTMLInputElement, ISliderProps> = (
+  {
+    min = 0,
+    max = 100,
+    step = 1,
+    value: outerValue,
+    defaultValue = 0,
+    onChange,
+    themeColor = 'primary',
+    ...props
+  },
   ref
 ) => {
-  const [currentValue, setCurrentValue] = useState(defaultValue);
+  const [value, setValue] = useValue(defaultValue, outerValue);
   const { makeColor } = useColor();
   const color = makeColor({ themeColor });
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentValue(parseInt(event.target.value));
-    onChange(event);
+    const newValue = parseInt(event.target.value);
+    setValue(newValue);
+    if (onChange) {
+      onChange(newValue, event);
+    }
   };
 
   return (
-    <StyledSlider
+    <StyledMain
       ref={ref}
-      $widthRatio={(currentValue / max) * 100}
+      $widthRatio={(value / max) * 100}
       $color={color}
       type="range"
       min={min}
       max={max}
       step={step}
-      defaultValue={defaultValue}
+      value={value}
       onChange={handleOnChange}
       {...props}
     />
   );
 };
 
-/**
- * `Slider` 是一個滑動型輸入器，允許使用者在數值區間內進行選擇，選擇的值可為連續值或是離散值。
- */
-const Slider = React.forwardRef(InternalSlider);
+const Slider =
+  React.forwardRef<HTMLInputElement, ISliderProps & Omit<extendElement<'input'>, 'onChange'>>(
+    InternalSlider
+  );
 
 export default Slider;

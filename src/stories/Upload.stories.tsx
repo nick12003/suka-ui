@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
+import Upload, { IUploadProps } from '@/components/Upload';
+import Button from '@/components/Button';
+
 import { ReactComponent as CloudUploadIcon } from '@/assets/SVG/cloudUpload.svg';
 import { ReactComponent as RotateLeftIcon } from '@/assets/SVG/rotateLeft.svg';
 import { ReactComponent as DeleteOutlineIcon } from '@/assets/SVG/deleteOutline.svg';
@@ -11,12 +14,24 @@ import duckImg from './assets/duck.jpeg';
 import eagleImg from './assets/eagle.jpeg';
 import frogImg from './assets/frog.jpeg';
 
-import Upload, { IUploadProps } from '../components/Upload';
-import Button from '../components/Button';
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '數據輸入元件/Upload',
   component: Upload,
+  argTypes: disableArgs(
+    {
+      multiple: {
+        defaultValue: false,
+      },
+    },
+    [
+      {
+        args: ['resetKey', 'accept', 'multiple', 'onChange', 'children'],
+        type: 'control',
+      },
+    ]
+  ),
 };
 
 const SpaceBetween = styled.div`

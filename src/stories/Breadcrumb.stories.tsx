@@ -7,18 +7,28 @@ import { ReactComponent as SupervisorAccountIcon } from '@/assets/SVG/supervisor
 import { ReactComponent as AssignmentIndIcon } from '@/assets/SVG/assignmentInd.svg';
 import Breadcrumb, { IBreadcrumbProps, InternalBreadcrumb } from '@/components/Breadcrumb';
 
+import { disableArgs } from './utilityStory';
+
 export default {
   title: '導航元件/Breadcrumb',
   component: InternalBreadcrumb,
-  argTypes: {
-    separator: {
-      control: 'text',
+  argTypes: disableArgs(
+    {
+      separator: {
+        control: 'text',
+      },
+      maxItems: {
+        control: 'number',
+        defaultValue: 8,
+      },
     },
-    maxItems: {
-      control: 'number',
-      defaultValue: 8,
-    },
-  },
+    [
+      {
+        args: ['routes'],
+        type: 'control',
+      },
+    ]
+  ),
 };
 
 const routes = [

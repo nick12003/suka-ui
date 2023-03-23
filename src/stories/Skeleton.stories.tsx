@@ -2,11 +2,16 @@ import React from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import Skeleton, { ISkeletonProps } from '../components/Skeleton';
+import Skeleton, { ISkeletonProps } from '@/components/Skeleton';
 
 export default {
   title: '反饋元件/Skeleton',
   component: Skeleton,
+  argTypes: {
+    variant: {
+      defaultValue: 'slide',
+    },
+  },
 };
 
 const SkeletonWrapper = styled.div`
@@ -42,18 +47,3 @@ const Template: Story<ISkeletonProps & React.ComponentPropsWithoutRef<'div'>> = 
 );
 
 export const Default = Template.bind({});
-
-export const WithoutAnimation = Template.bind({});
-WithoutAnimation.args = {
-  variant: 'colorBlock',
-};
-
-export const FlashAnimation = Template.bind({});
-FlashAnimation.args = {
-  variant: 'flash',
-};
-
-export const BackgroundSlide = Template.bind({});
-BackgroundSlide.args = {
-  variant: 'slide',
-};

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Story } from '@storybook/react';
 import styled, { keyframes } from 'styled-components';
 
-import Spin, { ISpinProps, InternalSpin } from '../components/Spin';
-import Switch from '../components/Switch';
+import Spin, { ISpinProps, InternalSpin } from '@/components/Spin';
+import Switch from '@/components/Switch';
 import { ReactComponent as Spinner } from '@/assets/SVG/spinner.svg';
 
 import { disableArgs } from './utilityStory';

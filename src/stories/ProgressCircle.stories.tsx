@@ -2,11 +2,51 @@ import { useState } from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import ProgressCircle, { IProgressCircleProps } from '../components/ProgressCircle';
+import ProgressCircle, {
+  IProgressCircleProps,
+  InternalProgressCircle,
+} from '@/components/ProgressCircle';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '反饋元件/ProgressCircle',
-  component: ProgressCircle,
+  component: InternalProgressCircle,
+  argTypes: disableArgs(
+    {
+      value: {
+        defaultValue: 0,
+      },
+      isClockwise: {
+        defaultValue: true,
+      },
+      themeColor: {
+        defaultValue: 'primary',
+        control: { type: 'color', presetColors: ['primary', 'secondary', 'disable', 'error'] },
+        table: {
+          type: {
+            summary: 'TThemeColor',
+          },
+        },
+      },
+      isStatusActive: {
+        defaultValue: true,
+      },
+      strokeColor: {
+        table: {
+          type: {
+            detail: `{'0%': '#108ee9','100%': '#87d068'}`,
+          },
+        },
+      },
+    },
+    [
+      {
+        args: ['strokeColor'],
+        type: 'control',
+      },
+    ]
+  ),
 };
 
 const Container = styled.div`
@@ -51,31 +91,6 @@ const TemplateGradientTrack = () => {
   );
 };
 
-const TemplateCustomColor: Story<IProgressCircleProps> = (args) => {
-  const defaultColor = '#FE6B8B';
-  const [pickedColor, setPickedColor] = useState(defaultColor);
-
-  return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
-        <input
-          type="color"
-          value={pickedColor}
-          onChange={(event) => setPickedColor(event.target.value)}
-        />
-      </div>
-      <Container>
-        <ProgressCircle {...args} themeColor={pickedColor} />
-        <ProgressCircle {...args} value={25} themeColor={pickedColor} />
-        <ProgressCircle {...args} value={50} themeColor={pickedColor} />
-        <ProgressCircle {...args} value={75} themeColor={pickedColor} />
-        <ProgressCircle {...args} value={100} themeColor={pickedColor} />
-        <ProgressCircle {...args} value={120} themeColor={pickedColor} />
-      </Container>
-    </div>
-  );
-};
-
 const TemplateDiffSize: Story<IProgressCircleProps> = (args) => (
   <Container>
     <ResizeProgressCircle {...args} $size={60} />
@@ -90,8 +105,6 @@ Default.args = {
 };
 
 export const LimitValue = TemplateDiffValueDemo.bind({});
-
-export const CustomColor = TemplateCustomColor.bind({});
 
 export const GradientTrack = TemplateGradientTrack.bind({});
 

@@ -1,10 +1,27 @@
-import { useState } from 'react';
 import { Story } from '@storybook/react';
-import Select, { ISelectProps } from '../components/Select';
+import Select, { ISelectProps, InternalSelect } from '@/components/Select';
+
+import { disableArgs } from './utilityStory';
 
 export default {
   title: '導航元件/Select',
-  component: Select,
+  component: InternalSelect,
+  argTypes: disableArgs(
+    {
+      isDisabled: {
+        defaultValue: false,
+      },
+      isLoading: {
+        defaultValue: false,
+      },
+    },
+    [
+      {
+        args: ['options', 'onSelect'],
+        type: 'control',
+      },
+    ]
+  ),
 };
 
 const options = [
@@ -30,32 +47,24 @@ const options = [
   },
 ];
 
-const Template: Story<ISelectProps> = (args) => {
-  const [selectedValue, setSelectedValue] = useState('');
-
-  return (
-    <Select
-      {...args}
-      value={selectedValue}
-      onSelect={(value: string) => setSelectedValue(value)}
-      placeholder="請選擇預約疫苗"
-    />
-  );
-};
+const Template: Story<ISelectProps> = (args) => <Select {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
+  placeholder: '請選擇預約疫苗',
   options,
 };
 
 export const Disabled = Template.bind({});
 Disabled.args = {
   options,
+  placeholder: '請選擇預約疫苗',
   isDisabled: true,
 };
 
 export const Loading = Template.bind({});
 Loading.args = {
   options,
+  placeholder: '請選擇預約疫苗',
   isLoading: true,
 };
